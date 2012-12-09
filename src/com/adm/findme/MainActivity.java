@@ -1,38 +1,53 @@
 package com.adm.findme;
 
-import java.util.Hashtable;
-import java.util.Map;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends android.support.v4.app.FragmentActivity {
+public class MainActivity extends android.support.v4.app.FragmentActivity  implements LocationListener {
 
 	
 	private GoogleMap mMap;
+	
+	private LocationManager lm;
+	
+	double latitude;
+	double longitude;
+	private double altitude;
+	private float accuracy;
+	
+	int i = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		setUpMapIfNeeded();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		lm = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+		if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
+		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, this);
 	}
 
 	@Override
@@ -55,11 +70,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
         }
     }
 
-    private void setUpMap() { 	
-    	mMap.setMyLocationEnabled(true);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(48.856578, 2.351828)).title("Paris").snippet("Population: 4,137,400").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-    }
-
     public void onClickContact(View v) {
     	startActivity (new Intent (this, Contact.class));
     }
@@ -72,5 +82,66 @@ public class MainActivity extends android.support.v4.app.FragmentActivity {
     	startActivity (new Intent (this, Settings.class));
     }
 
+	@Override
+	// Each time the location changes, this method is called
+	public void onLocationChanged(Location location) {
+		latitude = location.getLatitude();
+		longitude = location.getLongitude();
+		altitude = location.getAltitude();
+		accuracy = location.getAccuracy();
+		
+		String msg = String.format(
+						getResources().getString(R.string.new_location), latitude, longitude, altitude, accuracy);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Me").snippet("My last location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+		if (i == 0) {
+	        CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(latitude, longitude))
+				.zoom(14)
+				.build();
+			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+		};
+		i = 1;
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		String msg = String.format(getResources().getString(R.string.provider_disabled), provider);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		String msg = String.format(getResources().getString(R.string.provider_enabled), provider);
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		Log.v("i", "i: "+i);
+		String newStatus = "";
+		switch (status){
+			case LocationProvider.OUT_OF_SERVICE:
+				newStatus = "OUT_OF_SERVICE";
+				break;
+			case LocationProvider.TEMPORARILY_UNAVAILABLE:
+				newStatus = "TEMPORARILY_UNAVAILABLE";
+				break;
+			case LocationProvider.AVAILABLE:
+				newStatus = "AVAILABLE";
+				break;		
+		}
+		String msg = String.format(getResources().getString(R.string.provider_new_status), provider, newStatus);
+		Toast.makeText(this, msg,  Toast.LENGTH_SHORT).show();	
+	}
+
+	private void setUpMap() { 	
+		//Uncoment this line to enabled my current location on the map (little blue point) but it slows the start of the app.
+    	//mMap.setMyLocationEnabled(true);
+        mMap.addMarker(new MarkerOptions().position(new LatLng(48.856578, 2.351828)).title("Paris").snippet("Population: 4,137,400").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+    }
+	
 	
 }

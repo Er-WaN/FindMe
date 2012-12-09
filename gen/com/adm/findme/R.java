@@ -206,6 +206,10 @@ containing a value of this type.
         public static final int common_google_play_services_update_title=0x7f050007;
         public static final int hello_world=0x7f05000c;
         public static final int menu_settings=0x7f05000d;
+        public static final int new_location=0x7f050014;
+        public static final int provider_disabled=0x7f050012;
+        public static final int provider_enabled=0x7f050011;
+        public static final int provider_new_status=0x7f050013;
         public static final int title_activity_contact=0x7f05000e;
         public static final int title_activity_group=0x7f05000f;
         public static final int title_activity_settings=0x7f050010;

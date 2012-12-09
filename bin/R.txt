@@ -50,6 +50,10 @@ int string common_google_play_services_update_text 0x7f050008
 int string common_google_play_services_update_title 0x7f050007
 int string hello_world 0x7f05000c
 int string menu_settings 0x7f05000d
+int string new_location 0x7f050014
+int string provider_disabled 0x7f050012
+int string provider_enabled 0x7f050011
+int string provider_new_status 0x7f050013
 int string title_activity_contact 0x7f05000e
 int string title_activity_group 0x7f05000f
 int string title_activity_settings 0x7f050010
