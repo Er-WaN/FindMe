@@ -8,6 +8,9 @@
 package com.adm.findme;
 
 public final class R {
+    public static final class array {
+        public static final int map_type=0x7f060000;
+    }
     public static final class attr {
         /** <p>Must be a floating point value, such as "<code>1.2</code>".
 <p>This may also be a reference to a resource (in the form
@@ -134,17 +137,20 @@ containing a value of this type.
         public static final int ic_menu_refresh=0x7f020003;
         public static final int ic_menu_search=0x7f020004;
         public static final int ic_menu_settings=0x7f020005;
-        public static final int ic_round_more_normal=0x7f020006;
+        public static final int ic_menu_share=0x7f020006;
+        public static final int ic_round_more_normal=0x7f020007;
     }
     public static final class id {
-        public static final int contact=0x7f040005;
-        public static final int group=0x7f040006;
+        public static final int contact=0x7f040006;
+        public static final int group=0x7f040007;
         public static final int map=0x7f040004;
-        public static final int menu_settings=0x7f040008;
+        public static final int menu_settings=0x7f04000a;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
         public static final int satellite=0x7f040002;
-        public static final int settings=0x7f040007;
+        public static final int settings=0x7f040009;
+        public static final int share=0x7f040008;
+        public static final int spinner=0x7f040005;
         public static final int terrain=0x7f040003;
     }
     public static final class layout {
@@ -154,10 +160,10 @@ containing a value of this type.
         public static final int activity_settings=0x7f030003;
     }
     public static final class menu {
-        public static final int activity_contact=0x7f070000;
-        public static final int activity_group=0x7f070001;
-        public static final int activity_main=0x7f070002;
-        public static final int activity_settings=0x7f070003;
+        public static final int activity_contact=0x7f080000;
+        public static final int activity_group=0x7f080001;
+        public static final int activity_main=0x7f080002;
+        public static final int activity_settings=0x7f080003;
     }
     public static final class string {
         public static final int app_name=0x7f05000b;
@@ -236,11 +242,12 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f070001;
+        public static final int ButtonHome=0x7f070002;
     }
     public static final class styleable {
         /** Attributes that can be used with a MapAttrs.
