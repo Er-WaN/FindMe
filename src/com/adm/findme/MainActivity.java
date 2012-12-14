@@ -3,6 +3,7 @@ package com.adm.findme;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -11,26 +12,36 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends android.support.v4.app.FragmentActivity  implements LocationListener, OnItemSelectedListener {
+public class MainActivity extends android.support.v4.app.FragmentActivity  implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener {
 
 	
 	private GoogleMap mMap;
 	private Marker marker;
+	public Marker paris;
+	
 	
 	private LocationManager lm;
 	
@@ -110,9 +121,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
 		if(this.marker !=null){
 			this.marker.remove(); 
 		}
-		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("Me").snippet("My last location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("ErWaN").snippet("+34622617918").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 		this.marker = mMap.addMarker(mo);
-		
         if (i == 0) {
 	        CameraPosition cameraPosition = new CameraPosition.Builder()
 				.target(new LatLng(latitude, longitude))
@@ -121,6 +131,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
 			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 		};
 		i = 1;
+		Log.v("TAG", "loc");
 	}
 
 	@Override
@@ -153,7 +164,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
 	private void setUpMap() { 	
 		//Uncoment this line to enabled my current location on the map (little blue point) but it slows the start of the app.
     	//mMap.setMyLocationEnabled(true);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(48.856578, 2.351828)).title("Paris").snippet("Population: 4,137,400").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+		MarkerOptions mo_paris = new MarkerOptions().position(new LatLng(48.856578, 2.351828)).title("Paris").snippet("Population: 4,137,400").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        this.paris = mMap.addMarker(mo_paris);
+        mMap.setOnInfoWindowClickListener(this);
     }
 
 	@Override
@@ -181,6 +194,47 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		//Toast.makeText(this, marker.getTitle(),  Toast.LENGTH_SHORT).show();
+		
+		//set up dialog
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.activity_on_click_info_window);
+        dialog.setCancelable(true);
+        dialog.setTitle(marker.getTitle());
+        //set up text
+        TextView call = (TextView) dialog.findViewById(R.id.callContact);
+        TextView send = (TextView) dialog.findViewById(R.id.sendMessageContact);
+        call.setText("Call");
+        send.setText("Send Message");
+        call.setOnClickListener(this);       
+        send.setOnClickListener(this);
+        dialog.show();
+	}
+
+	@Override
+	public void onClick(View v) {
+		Toast.makeText(this,  "marker: "+marker.getSnippet(), Toast.LENGTH_SHORT).show();
+		switch (v.getId()) {
+		case R.id.callContact:
+			Intent call = new Intent(Intent.ACTION_VIEW);
+			call.setData(Uri.parse("tel:0621529465"));
+			startActivity(call);
+			Toast.makeText(this, "Call", Toast.LENGTH_SHORT).show();
+			break;
+		case R.id.sendMessageContact:
+			String message = "Salut, comment tu vas?";
+			Intent send_sms = new Intent(Intent.ACTION_VIEW);
+			send_sms.setData(Uri.parse("sms:0621529465"));
+			send_sms.putExtra("sms_boby", message);
+			startActivity(send_sms);
+			//Toast.makeText(this, "SMS", Toast.LENGTH_SHORT).show();
+			break;
+		}
+	}
+
 	
 	
 }
