@@ -6,7 +6,7 @@
 	<fragment xmlns:android="http://schemas.android.com/apk/res/android"
 	  android:id="@+id/map"
 	  android:layout_width="match_parent"
-	  android:layout_height="450dip"
+	  android:layout_height="385dip"
 	  class="com.google.android.gms.maps.SupportMapFragment"/>
 	<Spinner
     android:id="@+id/spinner"
@@ -29,7 +29,7 @@
 	    android:id="@+id/group"
 	    style="@style/ButtonHome"
 	    android:onClick="onClickGroup"
-	    android:src="@drawable/ic_menu_group"
+	    android:src="@drawable/ic_menu_view"
 	     />
 	  <ImageButton
 	    android:id="@+id/share"

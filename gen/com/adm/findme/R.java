@@ -133,12 +133,9 @@ containing a value of this type.
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int ic_menu_contacts=0x7f020001;
-        public static final int ic_menu_group=0x7f020002;
-        public static final int ic_menu_refresh=0x7f020003;
-        public static final int ic_menu_search=0x7f020004;
-        public static final int ic_menu_settings=0x7f020005;
-        public static final int ic_menu_share=0x7f020006;
-        public static final int ic_round_more_normal=0x7f020007;
+        public static final int ic_menu_settings=0x7f020002;
+        public static final int ic_menu_share=0x7f020003;
+        public static final int ic_menu_view=0x7f020004;
     }
     public static final class id {
         public static final int contact=0x7f040006;
@@ -248,6 +245,7 @@ containing a value of this type.
          */
         public static final int AppTheme=0x7f070001;
         public static final int ButtonHome=0x7f070002;
+        public static final int ButtonHomeLand=0x7f070003;
     }
     public static final class styleable {
         /** Attributes that can be used with a MapAttrs.

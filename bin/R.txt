@@ -15,12 +15,9 @@ int attr useViewLifecycle 0x7f01000c
 int attr zOrderOnTop 0x7f01000d
 int drawable ic_launcher 0x7f020000
 int drawable ic_menu_contacts 0x7f020001
-int drawable ic_menu_group 0x7f020002
-int drawable ic_menu_refresh 0x7f020003
-int drawable ic_menu_search 0x7f020004
-int drawable ic_menu_settings 0x7f020005
-int drawable ic_menu_share 0x7f020006
-int drawable ic_round_more_normal 0x7f020007
+int drawable ic_menu_settings 0x7f020002
+int drawable ic_menu_share 0x7f020003
+int drawable ic_menu_view 0x7f020004
 int id contact 0x7f040006
 int id group 0x7f040007
 int id map 0x7f040004
@@ -64,6 +61,7 @@ int string title_activity_settings 0x7f050010
 int style AppBaseTheme 0x7f070000
 int style AppTheme 0x7f070001
 int style ButtonHome 0x7f070002
+int style ButtonHomeLand 0x7f070003
 int[] styleable MapAttrs { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d }
 int styleable MapAttrs_cameraBearing 1
 int styleable MapAttrs_cameraTargetLat 2
