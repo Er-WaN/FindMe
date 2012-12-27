@@ -66,8 +66,9 @@ int string title_activity_settings 0x7f050010
 int style AppBaseTheme 0x7f070000
 int style AppTheme 0x7f070001
 int style ButtonHome 0x7f070002
-int style ButtonHomeLand 0x7f070003
-int style Transparent 0x7f070004
+int style ButtonHomeLand 0x7f070004
+int style ButtonHome_xhdpi 0x7f070003
+int style Transparent 0x7f070005
 int[] styleable MapAttrs { 0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003, 0x7f010004, 0x7f010005, 0x7f010006, 0x7f010007, 0x7f010008, 0x7f010009, 0x7f01000a, 0x7f01000b, 0x7f01000c, 0x7f01000d }
 int styleable MapAttrs_cameraBearing 1
 int styleable MapAttrs_cameraTargetLat 2
