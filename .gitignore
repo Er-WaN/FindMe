@@ -1,6 +1,5 @@
 # built application files
 
-
 *.apk
 
 *.ap_
@@ -37,4 +36,3 @@ local.properties
 .classpath
 
 .project
-
