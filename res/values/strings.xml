@@ -44,5 +44,13 @@
     <string name="km">KM</string>
     <string name="delete_historic">Delete Historic</string>
     <string name="delete_last_share">Delete Last Shared Location</string>
+    
+    <!-- Contacts -->
+    <string name="tab_groups">Groups</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="menu_update">Update</string>
+    <string name="menu_newGroup">New group</string>
+    <string name="searchBox">Search contact</string>
+    
 
 </resources>
