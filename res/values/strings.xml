@@ -11,7 +11,11 @@
     <string name="provider_disabled">The provider %s is now disabled</string>
     <string name="provider_new_status">The provider %1$s has now a new status %2$s</string>
     <string name="new_location">New Location : Latitude = %1$s, Longitude = %2$s, Altitude = %3$s avec une précision de %4$s mètres </string>
-
+	<string name="sharePlace">Place name</string>
+	<string name="shareDescription">Place Description</string>
+	<string name="share">Share</string>
+	<string name="cancel">Cancel</string>
+	<string name="shareTitle">Share Position</string>
     <string-array name="map_type">
         <item>Normal</item>
         <item>Hybrid</item>

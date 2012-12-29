@@ -21,6 +21,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -35,7 +36,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends android.support.v4.app.FragmentActivity  implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener {
+public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener, ShareDialog.ShareDialogListener {
 
 	
 	private GoogleMap mMap;
@@ -107,7 +108,24 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
     }
     
     public void onClickShare(View v) {
-    	Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+    	 // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ShareDialog();
+        dialog.show(getSupportFragmentManager(), "ShareDialog");
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+    	Toast.makeText(this, "Position Shared", Toast.LENGTH_SHORT).show();
+
+    }
+
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+    	Toast.makeText(this, "Cancel Share", Toast.LENGTH_SHORT).show();
+
     }
 
 	@Override
