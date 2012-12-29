@@ -1,6 +1,19 @@
 package com.adm.findme;
 
 
+import com.adm.findme.ViewDialog.ViewDialogListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.annotation.SuppressLint;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -9,6 +22,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -20,17 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-public class MainActivity extends android.support.v4.app.FragmentActivity  implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener {
+public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
 
 	
 	private GoogleMap mMap;
@@ -93,16 +97,64 @@ public class MainActivity extends android.support.v4.app.FragmentActivity  imple
     	startActivity (new Intent (this, Contact.class));
     }
     
+    //View Groups
+    /**
+     * Listener de boton View Group
+     * @author Carlos Ruiz
+     * @param vista
+     * se encarga de crear y mostrar el dialogo
+     * **/
     public void onClickGroup(View v) {
-    	startActivity (new Intent (this, Group.class));
+
+    	DialogFragment viewDialog = new ViewDialog();
+    	viewDialog.show(getSupportFragmentManager(), "ViewDialog");
+    }
+    
+    /**
+     * Metodo llamado desde el Dialogo vista de grupos usado para comunicarse entre ellos
+     * @author Carlos Ruiz
+     * **/
+    //Metodo del para comunicarse con el dialogo ViewDialog
+    public void onViewDialogGroupSelected(DialogFragment dialog,String selectedGroup){
+    	Toast.makeText(this, selectedGroup, Toast.LENGTH_SHORT).show();
     }
     
     public void onClickSettings(View v) {
     	startActivity (new Intent (this, Settings.class));
     }
     
+    
+    /**
+     * Listener de boton share
+     * @author Carlos Ruiz
+     * **/
     public void onClickShare(View v) {
-    	Toast.makeText(this, "Share", Toast.LENGTH_SHORT).show();
+    	 // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new ShareDialog();
+        dialog.show(getSupportFragmentManager(), "ShareDialog");
+    }
+
+    /**
+     * Metodo llamado desde el dialogo Share en caso de que se pulse el boton de Compartir Localizacion
+     * @author Carlos Ruiz
+     * **/
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+    	Toast.makeText(this, "Position Shared", Toast.LENGTH_SHORT).show();
+
+    }
+
+    /**
+     * Metodo llamado desde el dialogo Share en caso de que se pulse el boton de cancelar compartir localizacion
+     * @author Carlos Ruiz
+     * **/
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+    	Toast.makeText(this, "Cancel Share", Toast.LENGTH_SHORT).show();
+
     }
 
 	@Override
