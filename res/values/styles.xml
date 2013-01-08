@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -16,5 +16,34 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
+	<style name="ButtonHome" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">81dp</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:layout_marginBottom">-2dp</item>
+    </style>
+    <style name="ButtonHome_xhdpi" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">89dp</item>
+        <item name="android:layout_height">83dp</item>
+        <item name="android:layout_marginLeft">-1dp</item>
+        <item name="android:layout_marginRight">-1dp</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:layout_marginBottom">-2dp</item>
+    </style>
+    <style name="ButtonHomeLand" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">62dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+    <style name="Transparent" parent="android:Theme">
+	   <item name="android:windowIsTranslucent">true</item>
+	   <item name="android:windowBackground">@android:color/transparent</item>
+	   <item name="android:windowContentOverlay">@null</item>
+	   <item name="android:windowNoTitle">true</item>
+	   <item name="android:windowIsFloating">true</item>
+	   <item name="android:backgroundDimEnabled">false</item>
+  	</style>
 </resources>
