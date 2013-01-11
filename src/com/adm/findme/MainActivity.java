@@ -12,10 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.annotation.SuppressLint;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -28,12 +27,10 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,10 +191,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			double d = Double.parseDouble(contactlist[i][3]);
 			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0]).snippet(contactlist[i][1]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 			this.marker = mMap.addMarker(mo);
-		    liste.add(element);
 		};
 		
-		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("ErWaN").snippet("+34622617918").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Position").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 		this.marker = mMap.addMarker(mo);
         if (i == 0) {
 	        CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -207,7 +203,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 		};
 		i = 1;
-		Log.v("TAG", "loc");
 	}
 
 	@Override
@@ -240,8 +235,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	private void setUpMap() { 	
 		//Uncoment this line to enabled my current location on the map (little blue point) but it slows the start of the app.
     	//mMap.setMyLocationEnabled(true);
-		MarkerOptions mo_paris = new MarkerOptions().position(new LatLng(48.856578, 2.351828)).title("Paris").snippet("Population: 4,137,400").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-        this.paris = mMap.addMarker(mo_paris);
         mMap.setOnInfoWindowClickListener(this);
     }
 
@@ -276,62 +269,37 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		//Toast.makeText(this, marker.getTitle(),  Toast.LENGTH_SHORT).show();
 		CharSequence[] items = {"Call", "Send a message"};
 		//set up dialog
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(marker.getTitle())
-				.setItems(items, null);
-		
-        /*Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.activity_on_click_info_window);
-        dialog.setCancelable(true);
-        dialog.setTitle(marker.getTitle());
-        //set up text
-        TextView call = (TextView) dialog.findViewById(R.id.callContact);
-        TextView send = (TextView) dialog.findViewById(R.id.sendMessageContact);
-        call.setText("Call");
-        send.setText("Send Message");
-        call.setOnClickListener(new View.OnClickListener() {
- 
-			@Override
-			public void onClick(View v) {
-				Intent call = new Intent(Intent.ACTION_DIAL);
-				call.setData(Uri.parse("tel:"+marker.getSnippet()));
-				startActivity(call);
-			}
-		});     
-        send.setOnClickListener(new View.OnClickListener() {
- 
-			@Override
-			public void onClick(View v) {
-				String message = "Salut, comment tu vas?";
-				Intent send_sms = new Intent(Intent.ACTION_VIEW);
-				send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
-				send_sms.putExtra("sms_boby", message);
-				startActivity(send_sms);
-			}
-		});
-        dialog.show();*/
-	}
-
-	/*@Override
-	public void onClick(View v) {		
-		switch (v.getId()) {
-		case R.id.callContact:
-			Intent call = new Intent(Intent.ACTION_VIEW);
-			call.setData(Uri.parse("tel:"));
-			startActivity(call);
-			Toast.makeText(this, "Call", Toast.LENGTH_SHORT).show();
-			break;
-		case R.id.sendMessageContact:
-			String message = "Salut, comment tu vas?";
-			Intent send_sms = new Intent(Intent.ACTION_VIEW);
-			send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
-			send_sms.putExtra("sms_boby", message);
-			startActivity(send_sms);
-			//Toast.makeText(this, "SMS", Toast.LENGTH_SHORT).show();
-			break;
+		if (!marker.getTitle().equals("My Position")) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(marker.getTitle())
+				   .setItems(items, new DialogInterface.OnClickListener() {
+			               public void onClick(DialogInterface dialog, int which) {
+			            	   switch (which) {
+				           			case 0:
+					           			Intent call = new Intent(Intent.ACTION_VIEW);
+					           			call.setData(Uri.parse("tel:"+marker.getSnippet()));
+					           			startActivity(call);
+				           			break;
+				           			case 1:
+					           			Intent send_sms = new Intent(Intent.ACTION_VIEW);
+					           			send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
+					           			startActivity(send_sms);
+				           			break;
+				           		}
+				           };});
+			builder.show();
 		}
-	}*/
-
+	}	
 	
+	@Override
+	public void onPause() {
+		super.onPause();
+		lm.removeUpdates(this);
+	};
 	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		lm.removeUpdates(this);
+	};
 }
