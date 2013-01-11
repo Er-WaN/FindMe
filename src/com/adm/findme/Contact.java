@@ -8,9 +8,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.NavUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -21,6 +24,7 @@ public class Contact extends Activity {
 	ArrayList<String> names = new ArrayList<String>();
 	ArrayList<DataContact> contactos = new ArrayList<DataContact>();
 	TabHost host; 
+	ArrayAdapter<String> adapter;
 	
 	
 	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
@@ -69,6 +73,7 @@ public class Contact extends Activity {
 		
 		ListView listViewContacts = (ListView) findViewById(R.id.listViewContacts);
 		ListView listViewGroups = (ListView) findViewById(R.id.listViewGroups);
+		EditText editTextSearchContact = (EditText) findViewById(R.id.searchEditText);
 		
 		host = (TabHost) findViewById(R.id.tabHost); 
 		host.setup(); 
@@ -85,11 +90,36 @@ public class Contact extends Activity {
 		host.addTab(spec); 
 		host.setCurrentTabByTag("TABCONTACTS");
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);		
+		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);		
 
 		listViewContacts.setAdapter(adapter);
 		listViewGroups.setAdapter(adapter);	
 		
+		listViewContacts.setTextFilterEnabled(true);
+		editTextSearchContact.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				Contact.this.adapter.getFilter().filter(s);
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub	
+			}
+			
+		}
+		);
 	}
 	
 	@Override
