@@ -23,10 +23,10 @@ public class Contact extends Activity {
 	TabHost host; 
 	
 	
-	/**Lee los nombres de los contactos de la agenda telefónica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TELÉFONO) y devuelve un ArrayList 
-	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como parámetro. 
+	/**Lee los nombres de los contactos de la agenda telefï¿½nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TELï¿½FONO) y devuelve un ArrayList 
+	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como parï¿½metro. 
 	 * @author Carexcer
-	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del teléfono.
+	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telï¿½fono.
 	 * */
 	public ArrayList<DataContact> leerContactos(){
 		

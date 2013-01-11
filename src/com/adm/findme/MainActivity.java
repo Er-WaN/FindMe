@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.annotation.SuppressLint;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -21,6 +22,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import java.util.List;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -33,14 +35,20 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, OnClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
+public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
 
 	
 	private GoogleMap mMap;
 	private Marker marker;
 	public Marker paris;
 	
+	public String[][] contactlist = new String[][] {{"Carlos", "0034636847726", "39.476618","-0.345389"},{"Massimo", "00393405902903", "39.47251","-0.349509"}};
+	
+	List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
+	HashMap<String, String> element;
 	
 	private LocationManager lm;
 	
@@ -62,6 +70,17 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.map_type, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		map_type.setAdapter(adapter);
+		
+		for (int i = 0; i < contactlist.length; i++)
+		{
+			element = new HashMap<String, String>();
+			element.put("name", contactlist[i][0]);
+		    element.put("phone", contactlist[i][1]);
+			element.put("lat", contactlist[i][2]);
+		    element.put("long", contactlist[i][3]);
+		    liste.add(element);
+		};
+		
 	}
 	
 	@Override
@@ -168,6 +187,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		if(this.marker !=null){
 			this.marker.remove(); 
 		}
+		
+		for (int i = 0; i < contactlist.length; i++)
+		{
+			float f = Float.parseFloat(contactlist[i][2]);
+			double d = Double.parseDouble(contactlist[i][3]);
+			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0]).snippet(contactlist[i][1]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+			this.marker = mMap.addMarker(mo);
+		    liste.add(element);
+		};
+		
 		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("ErWaN").snippet("+34622617918").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 		this.marker = mMap.addMarker(mo);
         if (i == 0) {
@@ -243,11 +272,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	}
 
 	@Override
-	public void onInfoWindowClick(Marker marker) {
+	public void onInfoWindowClick(final Marker marker) {
 		//Toast.makeText(this, marker.getTitle(),  Toast.LENGTH_SHORT).show();
-		
+		CharSequence[] items = {"Call", "Send a message"};
 		//set up dialog
-        Dialog dialog = new Dialog(this);
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(marker.getTitle())
+				.setItems(items, null);
+		
+        /*Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.activity_on_click_info_window);
         dialog.setCancelable(true);
         dialog.setTitle(marker.getTitle());
@@ -256,31 +289,48 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
         TextView send = (TextView) dialog.findViewById(R.id.sendMessageContact);
         call.setText("Call");
         send.setText("Send Message");
-        call.setOnClickListener(this);       
-        send.setOnClickListener(this);
-        dialog.show();
+        call.setOnClickListener(new View.OnClickListener() {
+ 
+			@Override
+			public void onClick(View v) {
+				Intent call = new Intent(Intent.ACTION_DIAL);
+				call.setData(Uri.parse("tel:"+marker.getSnippet()));
+				startActivity(call);
+			}
+		});     
+        send.setOnClickListener(new View.OnClickListener() {
+ 
+			@Override
+			public void onClick(View v) {
+				String message = "Salut, comment tu vas?";
+				Intent send_sms = new Intent(Intent.ACTION_VIEW);
+				send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
+				send_sms.putExtra("sms_boby", message);
+				startActivity(send_sms);
+			}
+		});
+        dialog.show();*/
 	}
 
-	@Override
-	public void onClick(View v) {
-		Toast.makeText(this,  "marker: "+marker.getSnippet(), Toast.LENGTH_SHORT).show();
+	/*@Override
+	public void onClick(View v) {		
 		switch (v.getId()) {
 		case R.id.callContact:
 			Intent call = new Intent(Intent.ACTION_VIEW);
-			call.setData(Uri.parse("tel:0621529465"));
+			call.setData(Uri.parse("tel:"));
 			startActivity(call);
 			Toast.makeText(this, "Call", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.sendMessageContact:
 			String message = "Salut, comment tu vas?";
 			Intent send_sms = new Intent(Intent.ACTION_VIEW);
-			send_sms.setData(Uri.parse("sms:0621529465"));
+			send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
 			send_sms.putExtra("sms_boby", message);
 			startActivity(send_sms);
 			//Toast.makeText(this, "SMS", Toast.LENGTH_SHORT).show();
 			break;
 		}
-	}
+	}*/
 
 	
 	
