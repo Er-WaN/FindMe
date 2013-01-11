@@ -53,7 +53,7 @@ public class Contact extends Activity {
 			String PNUM = ContactsContract.CommonDataKinds.Phone.NUMBER;
 			String displayNumber = pCur.getString(pCur.getColumnIndex(PNUM));
 			pCur.close();
-			DataContact c1 = new DataContact(displayName, displayNumber);
+			DataContact c1 = new DataContact(displayName, displayNumber, false, false);
 			contactos.add(c1);
 			names.add(displayName);
 		}
