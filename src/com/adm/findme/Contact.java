@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,14 +22,19 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-public class Contact extends Activity {
+
+public class Contact extends android.support.v4.app.FragmentActivity implements ShareDialog.ShareDialogListener{
 
 	ArrayList<String> names = new ArrayList<String>();
 	List<DataContact> contactos = new ArrayList<DataContact>();
+	List<DataGroup> grupos = new ArrayList<DataGroup>();
 	TabHost host; 
-	ArrayAdapter<String> adapter;
-	private ContactDAO datasource;
+	ArrayAdapter<String> adapter_contact;
+	ArrayAdapter<String> adapter_group;
+	private ContactDAO contactsource;
+	private GroupDAO groupsource;
 	private ListAdapter listContacts;
+	private ListAdapter listgroups;
 	
 	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
 	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como par�metro. 
@@ -41,11 +47,9 @@ public class Contact extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_contact);
 		
-		datasource = new ContactDAO(this);
-		datasource.open();
-		contactos = datasource.getAllContacts();
-		
-		
+		contactsource = new ContactDAO(this);
+		contactsource.open();
+		contactos = contactsource.getAllContacts();
 		
 		List<String> contactsList = new ArrayList<String>();
 		
@@ -53,9 +57,20 @@ public class Contact extends Activity {
 			contactsList.add(contactos.get(i).getName());
 		}
 		
-		Toast.makeText(this, "ContactsList: "+String.valueOf(contactsList.size()), Toast.LENGTH_SHORT).show();
+		groupsource = new GroupDAO(this);
+		groupsource.open();
+		grupos = groupsource.getAllgroups();
 		
-		listContacts = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
+		Toast.makeText(this, "groups: "+grupos.size(), Toast.LENGTH_SHORT).show();
+		
+		List<String> groupsList = new ArrayList<String>();
+		
+		for (int i = 0; i < grupos.size(); i++) {
+			groupsList.add(grupos.get(i).getName());
+		}
+		
+		
+		//listContacts = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
 
 		//contactos = leerContactos();
 		
@@ -78,10 +93,11 @@ public class Contact extends Activity {
 		host.addTab(spec); 
 		host.setCurrentTabByTag("TABCONTACTS");
 		
-		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,contactsList);		
+		adapter_contact = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,contactsList);	
+		adapter_group = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,groupsList);	
 
-		listViewContacts.setAdapter(adapter);
-		listViewGroups.setAdapter(adapter);	
+		listViewContacts.setAdapter(adapter_contact);
+		listViewGroups.setAdapter(adapter_group);	
 		
 		listViewContacts.setTextFilterEnabled(true);
 		editTextSearchContact.addTextChangedListener(new TextWatcher() {
@@ -89,7 +105,8 @@ public class Contact extends Activity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				Contact.this.adapter.getFilter().filter(s);
+				Contact.this.adapter_contact.getFilter().filter(s);
+				Contact.this.adapter_group.getFilter().filter(s);
 				
 			}
 
@@ -161,8 +178,8 @@ public class Contact extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
+		switch (host.getCurrentTab()) {
+		/*case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
 			// to navigate up one level in the application structure. For
@@ -171,14 +188,27 @@ public class Contact extends Activity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		case R.id.menu_update:
+			return true;*/
+		case 0:
 			Toast.makeText(this, "pulsado item update", Toast.LENGTH_SHORT).show();
 			return true;
-		case R.id.menu_newGroup:
-			Toast.makeText(this, "pulsado item new group", Toast.LENGTH_SHORT).show();
+		case 1:
+			DialogFragment dialog = new CreateGroupDialog();
+	        dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

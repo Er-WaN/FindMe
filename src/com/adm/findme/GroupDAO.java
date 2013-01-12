@@ -1,7 +1,11 @@
 package com.adm.findme;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 public class GroupDAO extends DAOBase{
 	
@@ -48,6 +52,23 @@ public class GroupDAO extends DAOBase{
 		ContentValues value = new ContentValues();
 		value.put(GroupDAO.BLOCK, !group.getBlock());
 		mDb.update(TABLE_NAME, value, ID  + " = ?", new String[] {String.valueOf(group.getId())});
+	}
+	
+	public List<DataGroup> getAllgroups() {
+		List<DataGroup> groupList = new ArrayList<DataGroup>();
+		
+		Cursor cursor = mDb.rawQuery("SELECT * FROM Groups", null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				DataGroup group = new DataGroup();
+				group.setId(cursor.getInt(0));
+				group.setName(cursor.getString(1));
+				group.setBlock(cursor.getInt(2) == 0 ? true : false);
+				groupList.add(group);
+			} while (cursor.moveToNext());
+		}
+		return groupList;
 	}
 	
 }

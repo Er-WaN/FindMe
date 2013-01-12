@@ -10,6 +10,10 @@ public class DataGroup {
 		return id;
 	}
 	
+	public void setId(int name) {
+		this.id = id;
+	}
+	
 	public String getName() {
 		return name;
 	}
