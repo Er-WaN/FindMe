@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -21,12 +23,14 @@ public class Contact extends Activity {
 	ArrayList<String> names = new ArrayList<String>();
 	ArrayList<DataContact> contactos = new ArrayList<DataContact>();
 	TabHost host; 
+	ArrayAdapter<String> adapter;
+	ListView listViewContacts;
+	ListView listViewGroups; 
 	
-	
-	/**Lee los nombres de los contactos de la agenda telefï¿½nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TELï¿½FONO) y devuelve un ArrayList 
-	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como parï¿½metro. 
+	/**Lee los nombres de los contactos de la agenda telefonica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TELEFONO) y devuelve un ArrayList 
+	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como parametro. 
 	 * @author Carexcer
-	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telï¿½fono.
+	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telefono.
 	 * */
 	public ArrayList<DataContact> leerContactos(){
 		
@@ -37,7 +41,7 @@ public class Contact extends Activity {
 		
 		String selection = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = '1'";
 				
-		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + "= 'ASC'";
+		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " ASC";
 		Cursor cursor = getContentResolver().query(uri, projection, selection, null, sortOrder);
 		while (cursor.moveToNext()) {
 			String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
@@ -53,7 +57,7 @@ public class Contact extends Activity {
 			contactos.add(c1);
 			names.add(displayName);
 		}
-		cursor.close();
+		cursor.close(); 
 		
 		return contactos;
 		
@@ -63,12 +67,16 @@ public class Contact extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_contact);
-
-		contactos = leerContactos();
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
-		ListView listViewContacts = (ListView) findViewById(R.id.listViewContacts);
-		ListView listViewGroups = (ListView) findViewById(R.id.listViewGroups);
+		/*Se define todo lo que es la interfaz de la activity*/
+		setContentView(R.layout.activity_contact);
+		
+		listViewContacts = (ListView) findViewById(R.id.listViewContacts);
+		listViewGroups = (ListView) findViewById(R.id.listViewGroups);
+		
+		listViewContacts.setTextFilterEnabled(true);
+		listViewGroups.setTextFilterEnabled(true);
 		
 		host = (TabHost) findViewById(R.id.tabHost); 
 		host.setup(); 
@@ -85,11 +93,9 @@ public class Contact extends Activity {
 		host.addTab(spec); 
 		host.setCurrentTabByTag("TABCONTACTS");
 		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);		
+		/*Se leen los contactos del telefono y se muestran en pantalla a través de AsyncTask*/
+		new LeerContactosAsyncTask().execute();
 
-		listViewContacts.setAdapter(adapter);
-		listViewGroups.setAdapter(adapter);	
-		
 	}
 	
 	@Override
@@ -100,36 +106,59 @@ public class Contact extends Activity {
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
+
 		int tab = host.getCurrentTab();
-				if (tab==1)
-					menu.add(0, Menu.FIRST, 0, R.string.menu_newGroup);
-				else
-					menu.add(0, Menu.FIRST, 0, R.string.menu_update);
+		if (tab==0){
+			menu.getItem(0).setVisible(true);
+			menu.getItem(1).setVisible(false);
+		}else{
+			menu.getItem(1).setVisible(true);
+			menu.getItem(0).setVisible(false);
+		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
+		switch (item.getItemId()) {	
+
 		case R.id.menu_update:
-			Toast.makeText(this, "pulsado item update", Toast.LENGTH_SHORT).show();
+			Toast.makeText(Contact.this, "pulsado item update", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.menu_newGroup:
-			Toast.makeText(this, "pulsado item new group", Toast.LENGTH_SHORT).show();
+			Toast.makeText(Contact.this, "pulsado item new group", Toast.LENGTH_SHORT).show();
 			return true;
+			default:
+				Toast.makeText(Contact.this, "Algo ha ido mal al clickar en el menu", Toast.LENGTH_LONG).show();
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private class LeerContactosAsyncTask extends AsyncTask<Void, Integer, Void>{
+
+		
+		@Override
+		protected void onPreExecute() {			
+			Contact.this.setProgressBarIndeterminateVisibility(true);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			leerContactos();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+
+			adapter = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,names);
+			listViewContacts.setAdapter(adapter);
+			listViewGroups.setAdapter(adapter);
+			Contact.this.setProgressBarIndeterminateVisibility(false);
+			super.onPostExecute(result);
+		}
+		
 	}
 	
 }

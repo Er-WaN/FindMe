@@ -3,7 +3,14 @@
     <item
         android:id="@+id/menu_update"
         android:orderInCategory="100"
-        android:showAsAction="never"
+      
         android:title="@string/menu_update"/>
+    <!-- 	android:showAsAction="never"  -->  
+    <item
+        android:id="@+id/menu_newGroup"
+        android:orderInCategory="100"
+  
+        android:title="@string/menu_newGroup"/>
+<!-- 	android:showAsAction="never"  -->          
 
 </menu>
