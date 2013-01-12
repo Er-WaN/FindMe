@@ -23,8 +23,8 @@ public class GroupDAO extends DAOBase{
      * **/
 	public void create(String name) {
 		ContentValues value = new ContentValues();
-		   value.put(GroupDAO.NAME, name);
-		   mDb.insert(TABLE_NAME, null, value);
+		value.put(GroupDAO.NAME, name);
+		mDb.insert(TABLE_NAME, null, value);
 
 	}
 	

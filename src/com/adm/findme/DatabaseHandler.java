@@ -1,5 +1,6 @@
 package com.adm.findme;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,17 +30,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public static final String CONTACT_TABLE_CREATE = "CREATE TABLE " + CONTACT_TABLE + 
 			" (" + CONTACT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			CONTACT_NAME + " TEXT , " + CONTACT_PHONENUMBER + " TEXT , " + 
-			CONTACT_FAVORITE + "BOOLEAN , " + CONTACT_BLOCK + " BOOLEAN "	+ ")";
+			CONTACT_FAVORITE + " INTEGER , " + CONTACT_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String GROUP_TABLE_CREATE = "CREATE TABLE " + GROUP_TABLE + " (" + 
 			GROUP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			GROUP_NAME + " TEXT , " + GROUP_BLOCK + " BOOLEAN "	+ ")";
+			GROUP_NAME + " TEXT , " + GROUP_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String CONTECT_GROUP_TABLE_CREATE = "CREATE TABLE " + CONTACT_GROUP_TABLE + " (" +
-			CG_CONTACT_ID + " INTEGER NOT NULL , " +
-			//"FOREIGN KEY (" + CG_CONTACT_ID + ") REFERENCES " + CONTACT_TABLE + " (" + CONTACT_ID +") , " +
-			CG_GROUP_ID + " INTEGER NOT NULL , " +
-			//"FOREIGN KEY (" + CG_GROUP_ID + ") REFERENCES " + GROUP_TABLE + " (" + GROUP_ID +")  " +
+			CG_CONTACT_ID + " INTEGER " +
+			CG_GROUP_ID + " INTEGER " +
 			")";
 			
 
@@ -59,8 +58,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Create the table Contact_Group_Table
 		db.execSQL(CONTECT_GROUP_TABLE_CREATE);	
 		
-		//Insert example values in the DB
-		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('carlos', '123456789', 0, 0)");
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('erwan', '987654321', 0, 0)");
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('massimo', '147258369', 0, 0)");
+
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.adm.findme;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -22,16 +24,92 @@ import android.widget.Toast;
 public class Contact extends Activity {
 
 	ArrayList<String> names = new ArrayList<String>();
-	ArrayList<DataContact> contactos = new ArrayList<DataContact>();
+	List<DataContact> contactos = new ArrayList<DataContact>();
 	TabHost host; 
 	ArrayAdapter<String> adapter;
-	
+	private ContactDAO datasource;
+	private ListAdapter listContacts;
 	
 	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
 	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como par�metro. 
 	 * @author Carexcer
 	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del tel�fono.
 	 * */
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_contact);
+		
+		datasource = new ContactDAO(this);
+		datasource.open();
+		contactos = datasource.getAllContacts();
+		
+		
+		
+		List<String> contactsList = new ArrayList<String>();
+		
+		for (int i = 0; i < contactos.size(); i++) {
+			contactsList.add(contactos.get(i).getName());
+		}
+		
+		Toast.makeText(this, "ContactsList: "+String.valueOf(contactsList.size()), Toast.LENGTH_SHORT).show();
+		
+		listContacts = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contactsList);
+
+		//contactos = leerContactos();
+		
+		ListView listViewContacts = (ListView) findViewById(R.id.listViewContacts);
+		ListView listViewGroups = (ListView) findViewById(R.id.listViewGroups);
+		EditText editTextSearchContact = (EditText) findViewById(R.id.searchEditText);
+		
+		host = (TabHost) findViewById(R.id.tabHost); 
+		host.setup(); 
+		
+		TabSpec spec = host.newTabSpec("TABCONTACTS"); 
+		spec.setIndicator("Contactos"); 
+		spec.setContent(R.id.listViewContacts); 
+		host.addTab(spec); 
+		
+		spec = host.newTabSpec("TABGROUPS"); 
+		spec.setIndicator("Grupos"); 
+		 
+		spec.setContent(R.id.listViewGroups); 
+		host.addTab(spec); 
+		host.setCurrentTabByTag("TABCONTACTS");
+		
+		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,contactsList);		
+
+		listViewContacts.setAdapter(adapter);
+		listViewGroups.setAdapter(adapter);	
+		
+		listViewContacts.setTextFilterEnabled(true);
+		editTextSearchContact.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				Contact.this.adapter.getFilter().filter(s);
+				
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub	
+			}
+			
+		}
+		);
+	}
+	
 	public ArrayList<DataContact> leerContactos(){
 		
 		ArrayList<DataContact> contactos = new ArrayList<DataContact>();		
@@ -62,64 +140,6 @@ public class Contact extends Activity {
 		return contactos;
 		
 		
-	}
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_contact);
-
-		contactos = leerContactos();
-		
-		ListView listViewContacts = (ListView) findViewById(R.id.listViewContacts);
-		ListView listViewGroups = (ListView) findViewById(R.id.listViewGroups);
-		EditText editTextSearchContact = (EditText) findViewById(R.id.searchEditText);
-		
-		host = (TabHost) findViewById(R.id.tabHost); 
-		host.setup(); 
-		
-		TabSpec spec = host.newTabSpec("TABCONTACTS"); 
-		spec.setIndicator("Contactos"); 
-		spec.setContent(R.id.listViewContacts); 
-		host.addTab(spec); 
-		
-		spec = host.newTabSpec("TABGROUPS"); 
-		spec.setIndicator("Grupos"); 
-		 
-		spec.setContent(R.id.listViewGroups); 
-		host.addTab(spec); 
-		host.setCurrentTabByTag("TABCONTACTS");
-		
-		adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names);		
-
-		listViewContacts.setAdapter(adapter);
-		listViewGroups.setAdapter(adapter);	
-		
-		listViewContacts.setTextFilterEnabled(true);
-		editTextSearchContact.addTextChangedListener(new TextWatcher() {
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
-				Contact.this.adapter.getFilter().filter(s);
-				
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// TODO Auto-generated method stub	
-			}
-			
-		}
-		);
 	}
 	
 	@Override
@@ -160,6 +180,5 @@ public class Contact extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
+	}	
 }
