@@ -76,5 +76,18 @@ public class ContactDAO extends DAOBase{
 		}
 		return contactList;
 	}
+	
+	public ArrayList<String> getAllContactsName() {
+		ArrayList<String> contactList = new ArrayList<String>();
+		
+		Cursor cursor = mDb.rawQuery("SELECT * FROM Contacts", null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				contactList.add(cursor.getString(1));
+			} while (cursor.moveToNext());
+		}
+		return contactList;
+	}
 
 }

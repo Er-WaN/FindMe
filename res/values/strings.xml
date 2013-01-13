@@ -27,7 +27,9 @@
     <string name="shareTitle">Share Position</string>
 
     <!-- View Group -->
-    <string name="viewTitle">Select Group</string>
+    <string name="viewTitle">Select Groups</string>
+    <string name="cancel">Cancel</string>
+    <string name="show">Show</string>
 
     <string-array name="groups">
         <item>All</item>
@@ -56,5 +58,8 @@
     <string name="new_group_name">Name:</string>
     <string name="new_group_create">Create</string>
     <string name="new_group_cancel">Cancel</string>
+    <string name="new_group_hint">New group Name</string>
+    
+    
 
 </resources>

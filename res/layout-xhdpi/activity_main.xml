@@ -31,7 +31,7 @@
 	  <ImageButton
 	    android:id="@+id/group"
 	    style="@style/ButtonHome_xhdpi"
-	    android:onClick="onClickGroup"
+	    android:onClick="onClickView"
 	    android:src="@drawable/ic_menu_view"
 	     />
 	  <ImageButton

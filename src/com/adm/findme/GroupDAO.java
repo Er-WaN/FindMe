@@ -7,9 +7,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-public class GroupDAO extends DAOBase{
-	
-	public static final String TABLE_NAME = "Group_Table";
+public class GroupDAO extends DAOBase {
+
+	public static final String TABLE_NAME = "Groups";
 	public static final String ID = "Group_id";
 	public static final String NAME = "Group_name";
 	public static final String BLOCK = "Group_block";
@@ -69,6 +69,23 @@ public class GroupDAO extends DAOBase{
 			} while (cursor.moveToNext());
 		}
 		return groupList;
+	}
+	
+	public List<String> getAllGroupsName() {
+		List<String> groupsListName = new ArrayList<String>();
+		List<DataGroup> groupList = new ArrayList<DataGroup>();
+		
+		groupList = this.getAllgroups();
+		
+			for (int i = 0; i < groupList.size(); i++) {
+				groupsListName.add(groupList.get(i).getName());
+			}
+		return groupsListName;
+	}
+	
+	public Cursor getAllGroupsNameCursor() {
+		Cursor cursor = mDb.rawQuery("SELECT _id, Group_name, Group_block FROM Groups", null);
+		return cursor;
 	}
 	
 }

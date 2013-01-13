@@ -33,6 +33,7 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	ArrayAdapter<String> adapter_group;
 	private ContactDAO contactsource;
 	private GroupDAO groupsource;
+	private GroupDAO groupsource2;
 	private ListAdapter listContacts;
 	private ListAdapter listgroups;
 	
@@ -210,5 +211,21 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	public void onDialogNegativeClick(DialogFragment dialog) {
 		// TODO Auto-generated method stub
 		
-	}	
+	}
+	
+	public void onUpdateGroup() {
+		/*int i = 0;
+		groupsource2 = new GroupDAO(this);
+		groupsource2.open();
+		grupos = groupsource2.getAllgroups();
+				
+		List<String> groupsList = new ArrayList<String>();
+		
+		for (int i = 0; i < grupos.size(); i++) {
+			groupsList.add(grupos.get(i).getName());
+		}
+		
+		adapter_group = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,groupsList);	
+		listViewGroups.setAdapter(adapter_group);	*/	
+	}
 }
