@@ -13,7 +13,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
+import adm_mysql_2.bd_access;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -22,6 +24,8 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import java.util.List;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -46,6 +50,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
 	HashMap<String, String> element;
+	
+	private bd_access BD= new bd_access("http://www.carlosexposito.es/");
 	
 	private LocationManager lm;
 	
@@ -302,4 +308,98 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		super.onDestroy();
 		lm.removeUpdates(this);
 	};
+	
+	private class printPlaces extends AsyncTask<Void, Integer, Boolean>{
+		ArrayList <ArrayList> places = new ArrayList<ArrayList>();
+		public LocationManager mLocationManager;
+        public claseLocation mloc;
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			mloc = new claseLocation();
+			mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,mloc);
+		}
+		@Override
+		protected Boolean doInBackground(Void... params) {
+		// TODO Auto-generated method stub
+		while (!isCancelled()) {
+				try {
+					// DO SOMETHING
+					places = BD.getPlaces();
+					//publishProgress();
+				}
+				catch(Exception ie) {
+					Log.d("AsyncTask", "InterruptedException");
+					return false;
+				}
+			}
+		return true;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+		// TODO Auto-generated method stub
+		// Change something in the interface
+			int cont = 0;
+			MarkerOptions mo;
+			ArrayList contact;
+			while(places.size()< cont){
+				contact=BD.getContactByUser((Integer)places.get(cont).get(0));
+				//Pinto la marca correspondiente a una publicacion
+				mo = new MarkerOptions().position(new LatLng((Double) places.get(cont).get(5),(Double) places.get(cont).get(6))).title((String)places.get(cont).get(2)).snippet((String)contact.get(1)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+				marker = mMap.addMarker(mo);
+				cont++;
+			}
+			
+	        CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(latitude, longitude))
+				.zoom(14)
+				.build();
+			mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			
+		}
+		
+		public class claseLocation implements LocationListener {
+
+	        @Override
+	        public void onLocationChanged(Location location) {
+
+	            int lat = (int) location.getLatitude(); // * 1E6);
+	            int log = (int) location.getLongitude(); // * 1E6);
+	            int acc = (int) (location.getAccuracy());
+
+	            String info = location.getProvider();
+	            try {
+	                latitude = location.getLatitude();
+	                longitude = location.getLongitude();
+
+	            } catch (Exception e) {
+	                // progDailog.dismiss();
+	                // Toast.makeText(getApplicationContext(),"Unable to get Location"
+	                // , Toast.LENGTH_LONG).show();
+	            }
+
+	        }
+
+	        @Override
+	        public void onProviderDisabled(String provider) {
+	            Log.i("OnProviderDisabled", "OnProviderDisabled");
+	        }
+
+	        @Override
+	        public void onProviderEnabled(String provider) {
+	            Log.i("onProviderEnabled", "onProviderEnabled");
+	        }
+
+	        @Override
+	        public void onStatusChanged(String provider, int status,
+	                Bundle extras) {
+	            Log.i("onStatusChanged", "onStatusChanged");
+
+	        }
+
+	    }
+	}
 }
