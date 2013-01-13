@@ -60,6 +60,10 @@
     <string name="new_group_cancel">Cancel</string>
     <string name="new_group_hint">New group Name</string>
     
-    
-
+    <!-- First Time Dialog -->
+	<string name="first_time_dialog_title">First use</string>
+	<string name="first_time_dialog_message">Thanks for downloading our application. \n\nYou need to put your phone number:</string>
+	<string name="first_time_dialog_hint">Your phone number here</string>
+	
+	
 </resources>

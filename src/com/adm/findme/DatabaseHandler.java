@@ -12,15 +12,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public final String DBNAME = "FindMeDB";
 	
 	public static final String CONTACT_TABLE = "Contacts";
-	public static final String CONTACT_ID = "Contact_id";
+	public static final String CONTACT_ID = "_id";
+	public static final String CONTACT_ID_EXTERNAL = "Contact_id_external";
 	public static final String CONTACT_NAME = "Contact_name";
 	public static final String CONTACT_PHONENUMBER = "Contact_phonenumber";
 	public static final String CONTACT_FAVORITE = "Contact_favorite";
 	public static final String CONTACT_BLOCK = "Contact_block";
 	
 	public static final String GROUP_TABLE = "Groups";
-	public static final String ID = "_id";
-	public static final String GROUP_ID = "Group_id";
+	public static final String GROUP_ID = "_id";
 	public static final String GROUP_NAME = "Group_name";
 	public static final String GROUP_BLOCK = "Group_block";
 	
@@ -34,13 +34,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			CONTACT_FAVORITE + " INTEGER , " + CONTACT_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String GROUP_TABLE_CREATE = "CREATE TABLE " + GROUP_TABLE + " (" + 
-			ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			GROUP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			GROUP_NAME + " TEXT , " + GROUP_BLOCK + " INTEGER "	+ ")";
 	
-	public static final String CONTECT_GROUP_TABLE_CREATE = "CREATE TABLE " + CONTACT_GROUP_TABLE + " (" +
+	public static final String CONTACT_GROUP_TABLE_CREATE = "CREATE TABLE " + CONTACT_GROUP_TABLE + " (" +
 			CG_CONTACT_ID + " INTEGER " +
 			CG_GROUP_ID + " INTEGER " +
 			")";
+	
 			
 
 	public DatabaseHandler(Context context, String name, CursorFactory factory, int version) {
@@ -57,15 +58,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		db.execSQL(GROUP_TABLE_CREATE);
 		
 		// Create the table Contact_Group_Table
-		db.execSQL(CONTECT_GROUP_TABLE_CREATE);	
-		
+		db.execSQL(CONTACT_GROUP_TABLE_CREATE);	
+				
 		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test1', '611111111', 0, 0)");
 		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test2', '622222222', 0, 0)");
 		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test3', '633333333', 0, 0)");
 		
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('Friend', 0)");
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('UPV', 0)");
-
+		
 	}
 
 	@Override
