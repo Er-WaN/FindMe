@@ -94,13 +94,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
 		lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, this);
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		return true;
-	}
 	
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
@@ -119,6 +112,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
     	startActivity (new Intent (this, Contact.class));
     }
     
+    public void onClickSettings(View v) {
+    	startActivity (new Intent (this, Settings.class));
+    }
+    
     //View Groups
     /**
      * Listener de boton View Group
@@ -126,7 +123,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
      * @param vista
      * se encarga de crear y mostrar el dialogo
      * **/
-    public void onClickGroup(View v) {
+    public void onClickView(View v) {
 
     	DialogFragment viewDialog = new ViewDialog();
     	viewDialog.show(getSupportFragmentManager(), "ViewDialog");
@@ -139,10 +136,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
     //Metodo del para comunicarse con el dialogo ViewDialog
     public void onViewDialogGroupSelected(DialogFragment dialog,String selectedGroup){
     	Toast.makeText(this, selectedGroup, Toast.LENGTH_SHORT).show();
-    }
-    
-    public void onClickSettings(View v) {
-    	startActivity (new Intent (this, Settings.class));
     }
     
     

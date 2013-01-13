@@ -29,7 +29,7 @@
 	  <ImageButton
 	    android:id="@+id/group"
 	    style="@style/ButtonHome"
-	    android:onClick="onClickGroup"
+	    android:onClick="onClickView"
 	    android:src="@drawable/ic_menu_view"
 	     />
 	  <ImageButton

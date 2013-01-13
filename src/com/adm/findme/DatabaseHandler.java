@@ -19,9 +19,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public static final String CONTACT_BLOCK = "Contact_block";
 	
 	public static final String GROUP_TABLE = "Groups";
+	public static final String ID = "_id";
 	public static final String GROUP_ID = "Group_id";
 	public static final String GROUP_NAME = "Group_name";
-	public static final String GROUP_BLOCK = "Group_Block";
+	public static final String GROUP_BLOCK = "Group_block";
 	
 	public static final String CONTACT_GROUP_TABLE = "Contact_Group";
 	public static final String CG_CONTACT_ID = "Contact_id";
@@ -33,7 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			CONTACT_FAVORITE + " INTEGER , " + CONTACT_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String GROUP_TABLE_CREATE = "CREATE TABLE " + GROUP_TABLE + " (" + 
-			GROUP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+			ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 			GROUP_NAME + " TEXT , " + GROUP_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String CONTECT_GROUP_TABLE_CREATE = "CREATE TABLE " + CONTACT_GROUP_TABLE + " (" +

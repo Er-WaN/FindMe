@@ -38,6 +38,8 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	ArrayAdapter<String> adapter_group;
 	private ContactDAO contactsource;
 	private GroupDAO groupsource;
+	private GroupDAO groupsource2;
+
 	private ListAdapter listContacts; 	//Adapter that relates the listViewContacts with contactsList
 	private ListAdapter listgroups;		//Adapter that relates the listViewGroups with groupsList
 	private List<String> contactsList;	//Contains the names of the contacts that will be shown in the listview 
@@ -89,7 +91,7 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		host.addTab(spec); 
 		host.setCurrentTabByTag("TABCONTACTS");
 		
-		/*Se leen los contactos del telefono y se muestran en pantalla a través de AsyncTask*/
+		/*Se leen los contactos del telefono y se muestran en pantalla a travï¿½s de AsyncTask*/
 		new LeerContactosAsyncTask().execute();
 		
 		listViewContacts.setTextFilterEnabled(true);
@@ -270,6 +272,7 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	public void onDialogNegativeClick(DialogFragment dialog) {
 		// TODO Auto-generated method stub
 		
+
 	}	
 
 	/**This method format the phone number of each contact, obtaining a format like 6XXXXXXXX.
@@ -313,4 +316,23 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		return contacts;
 	}
 	
+
+	
+	
+	public void onUpdateGroup() {
+		/*int i = 0;
+		groupsource2 = new GroupDAO(this);
+		groupsource2.open();
+		grupos = groupsource2.getAllgroups();
+				
+		List<String> groupsList = new ArrayList<String>();
+		
+		for (int i = 0; i < grupos.size(); i++) {
+			groupsList.add(grupos.get(i).getName());
+		}
+		
+		adapter_group = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,groupsList);	
+		listViewGroups.setAdapter(adapter_group);	*/	
+	}
+
 }

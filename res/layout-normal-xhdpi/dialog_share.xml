@@ -5,7 +5,7 @@
     android:orientation="vertical" >
     
    <EditText
-        android:id="@+id/_group_name"
+        android:id="@+id/sharePlaceName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -16,7 +16,7 @@
    
      <!-- android:gravity="left|top" -->
       <EditText          
-        android:id="@+id/contact_list"
+        android:id="@+id/shareDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"

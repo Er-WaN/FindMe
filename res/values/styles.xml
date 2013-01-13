@@ -32,12 +32,41 @@
         <item name="android:layout_marginTop">-2dp</item>
         <item name="android:layout_marginBottom">-2dp</item>
     </style>
+    
+    <!-- Style for Landscape-->
     <style name="ButtonHomeLand" parent="@android:style/TextAppearance.Medium">
         <item name="android:layout_width">70dp</item>
         <item name="android:layout_height">62dp</item>
         <item name="android:layout_marginLeft">0dp</item>
         <item name="android:layout_marginRight">0dp</item>
     </style>
+    
+    <!-- Style for Normal HDPI Landscape-->
+    <style name="ButtonHomeNormalLandHDPI" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">72dp</item>
+        <item name="android:layout_height">67dp</item>
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+    
+    <!-- Style for Normal XHDPI-->
+    <style name="ButtonHomeNormalXHDPI" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">92dp</item>
+        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_marginLeft">-2dp</item>
+        <item name="android:layout_marginRight">-2dp</item>
+    </style>
+    
+    <!-- Style for Normal XHDPI Landscape-->
+    <style name="ButtonHomeNormalLandXHDPI" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_width">77dp</item>
+        <item name="android:layout_height">77dp</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">-1dp</item>
+        <item name="android:layout_marginLeft">-5dp</item>
+    </style>
+    
+    
     <style name="Transparent" parent="android:Theme">
 	   <item name="android:windowIsTranslucent">true</item>
 	   <item name="android:windowBackground">@android:color/transparent</item>
