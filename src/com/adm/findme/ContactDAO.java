@@ -74,6 +74,7 @@ public class ContactDAO extends DAOBase{
 				contactList.add(contact);
 			} while (cursor.moveToNext());
 		}
+		cursor.close();
 		return contactList;
 	}
 	

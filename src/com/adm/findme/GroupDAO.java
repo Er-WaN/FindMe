@@ -67,7 +67,9 @@ public class GroupDAO extends DAOBase {
 				group.setBlock(cursor.getInt(2) == 0 ? true : false);
 				groupList.add(group);
 			} while (cursor.moveToNext());
+			
 		}
+		cursor.close();
 		return groupList;
 	}
 	

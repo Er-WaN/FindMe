@@ -23,13 +23,13 @@
     <string name="sharePlace">Place name</string>
     <string name="shareDescription">Place Description</string>
     <string name="share">Share</string>
-    <string name="cancel">Cancel</string>
     <string name="shareTitle">Share Position</string>
 
     <!-- View Group -->
     <string name="viewTitle">Select Groups</string>
-    <string name="cancel">Cancel</string>
     <string name="show">Show</string>
+    <string name="cancel">Cancel</string>
+    
 
     <string-array name="groups">
         <item>All</item>

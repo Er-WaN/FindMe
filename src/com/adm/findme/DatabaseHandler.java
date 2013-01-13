@@ -59,9 +59,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		// Create the table Contact_Group_Table
 		db.execSQL(CONTECT_GROUP_TABLE_CREATE);	
 		
-		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Erwan', '123456789', 0, 0)");
-		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Carlos', '987654321', 0, 0)");
-		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Massimo', '147258369', 0, 0)");
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test1', '611111111', 0, 0)");
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test2', '622222222', 0, 0)");
+		db.execSQL("insert into Contacts (Contact_name, Contact_phonenumber, Contact_favorite, Contact_block) values ('Test3', '633333333', 0, 0)");
 		
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('Friend', 0)");
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('UPV', 0)");

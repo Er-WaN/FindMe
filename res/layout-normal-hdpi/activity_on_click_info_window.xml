@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff" 
+    android:orientation="vertical">
+
+	 <TextView
+	     android:id="@+id/callContact"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:text="Call Contact"
+	     android:textColor="#000000"
+	     android:clickable="true"
+	     android:textSize="20dp" 
+	     android:layout_marginLeft="5dip"/>
+	 <TextView
+	     android:id="@+id/sendMessageContact"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:text="Send message to contact"
+	     android:textColor="#000000"
+	     android:textSize="20dp"
+	     android:clickable="true"
+	     android:layout_marginLeft="5dip" />
+ 
+</LinearLayout>
