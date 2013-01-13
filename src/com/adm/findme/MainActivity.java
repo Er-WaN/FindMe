@@ -18,6 +18,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,13 +29,16 @@ import java.util.List;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -41,6 +46,7 @@ import java.util.HashMap;
 
 public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
 
+	private SettingsDAO settingsDAO;
 	
 	private GoogleMap mMap;
 	private Marker marker;
@@ -83,6 +89,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		    element.put("long", contactlist[i][3]);
 		    liste.add(element);
 		};
+		
+		if (this.checkFirstTime() == true)
+			firstTimeDialog();
 		
 	}
 	
@@ -394,5 +403,59 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	        }
 
 	    }
+	}
+	
+	public boolean checkFirstTime() {
+		final String PREFS_NAME = "MyPrefsFile";
+		boolean isFirst;
+		try {
+			SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);		
+			isFirst = preferences.getBoolean("isFirst", true);
+			
+		} catch (Exception e) {
+			isFirst = true;
+		}
+		return isFirst;
+	}
+	
+	public void firstTimeEnable(int phone) {
+		final String PREFS_NAME = "MyPrefsFile";
+		
+		SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);
+		
+		Editor editor = preferences.edit();
+		editor.putBoolean("isFirst", false);
+		editor.putInt("myPhone", phone );
+		editor.commit();
+	}
+	
+	
+	public void firstTimeDialog() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle(R.string.first_time_dialog_title);
+		alert.setMessage(R.string.first_time_dialog_message);
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		input.setHint(R.string.first_time_dialog_hint);
+		input.setInputType(InputType.TYPE_CLASS_NUMBER);
+		alert.setView(input);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		  // Do something with value!
+			EditText phone = (EditText)input;
+			Toast.makeText(MainActivity.this, "test: "+phone.getText().toString(),  Toast.LENGTH_SHORT).show();
+			firstTimeEnable(Integer.parseInt(phone.getText().toString()));
+		  }
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		  }
+		});
+
+		alert.show();
 	}
 }
