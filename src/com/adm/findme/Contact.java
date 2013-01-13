@@ -153,6 +153,8 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		}
 		cursor.close();
 		
+		contactos = formatPhoneNumbers(contactos);
+		
 		for (int i = 0; i < contactos.size(); i++) 
 			contactsList.add(contactos.get(i).getName());
 
@@ -270,4 +272,45 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		
 	}	
 
+	/**This method format the phone number of each contact, obtaining a format like 6XXXXXXXX.
+	 * The first digit of the number will be 6 and the phone will have 9 digits*
+	 * @param contacts - ArrayList of DataContact with phone numbers unformatted
+	 * @return ArrayList<DataContact> with all contacts with a number format like 6XXXXXXXX
+	 * @author carexcer*/
+	public ArrayList<DataContact> formatPhoneNumbers(ArrayList<DataContact> contacts){
+
+		int tam = contacts.size();
+		ArrayList<Integer> markedContacts = new ArrayList<Integer>();
+
+		for(int i=0; i<tam; i++){
+
+			if(contacts.get(i).getPhoneNumber() != null){ 
+				/*if the contact has phone number*/
+				contacts.get(i).setPhoneNumber(contacts.get(i).getPhoneNumber().replace(" ", "")); //remove blank spaces
+				int auxLength = contacts.get(i).getPhoneNumber().length();
+				String auxNum = contacts.get(i).getPhoneNumber();
+				if(auxLength!=9){									//if number has more than 9 digits, I get the lasts 9				
+					if(auxLength<9)
+						contacts.get(i).setPhoneNumber("000000000"); //we set this number because like don't start with 6, this will be removed 
+					else if(auxLength>9)
+						contacts.get(i).setPhoneNumber(auxNum.substring(auxLength-9, auxLength));
+				}
+				
+				if(contacts.get(i).getPhoneNumber().startsWith("6")==false ) //If is a fix number, I mark to remove then
+					markedContacts.add(i);
+			}else{			//if the contact hasn't a phone number, we remove it from the list
+				markedContacts.add(i);
+			}
+			contacts.get(i).setName(contacts.get(i).getName()+ " - " + contacts.get(i).getPhoneNumber());
+		}
+
+		int i=0;
+		while(markedContacts.size()>0){
+			contacts.remove(markedContacts.get(0).intValue()-i);
+			markedContacts.remove(0);
+			i++;
+		}		
+		return contacts;
+	}
+	
 }
