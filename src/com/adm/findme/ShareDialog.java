@@ -5,8 +5,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * @author Carlos Ruiz
@@ -18,12 +22,13 @@ public class ShareDialog extends DialogFragment{
      * implement this interface in order to receive event callbacks.
      * Each method passes the DialogFragment in case the host needs to query it. */
     public interface ShareDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
+        public void onDialogPositiveClick(DialogFragment dialog, String name, String description);
         public void onDialogNegativeClick(DialogFragment dialog);
     }
 	
 	 // Use this instance of the interface to deliver action events
     ShareDialogListener mListener;
+    private Handler mResponseHandler;
     
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -48,27 +53,29 @@ public class ShareDialog extends DialogFragment{
 		// Get the layout inflater
 		    LayoutInflater inflater = getActivity().getLayoutInflater();
 		   
+		    View v = inflater.inflate(R.layout.dialog_share, null);	
+		    final EditText name_place = (EditText)v.findViewById(R.id.sharePlaceName);
+		    final EditText description_place = (EditText)v.findViewById(R.id.shareDescription);
 		    // Inflate and set the layout for the dialog
 		    // Pass null as the parent view because its going in the dialog layout
-		    builder.setView(inflater.inflate(R.layout.dialog_share, null))
+		    builder.setView(v)
 		    		.setTitle(R.string.shareTitle)
 		    // Add action buttons
 		           .setPositiveButton(R.string.share, new DialogInterface.OnClickListener() {
 		               @Override
 		               public void onClick(DialogInterface dialog, int id) {
-		                   // TODO que hacer en caso de compartir localizacion
-		            	   mListener.onDialogPositiveClick(ShareDialog.this);
+		                   String name = name_place.getText().toString();
+		                   String description = description_place.getText().toString();
+		            	   mListener.onDialogPositiveClick(ShareDialog.this, name, description);
 		               }
 		           })
 		           .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 		               public void onClick(DialogInterface dialog, int id) {
-//		                   LoginDialogFragment.this.getDialog().cancel();
 		            	   mListener.onDialogNegativeClick(ShareDialog.this);
 		                   ShareDialog.this.getDialog().cancel();
 		               }
 		           });      
 		    return builder.create();
 	}
-
 
 }

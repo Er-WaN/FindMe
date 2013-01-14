@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity" 
+    android:background="@drawable/background">
+
+    <TextView
+        android:id="@+id/textViewSettingsKm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="39dp"
+        android:layout_marginTop="53dp"
+        android:textColor="#ffffff"
+        android:text="@string/km" />
+    
+
+    <EditText
+        android:id="@+id/editTextSettingsKm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textViewSettingsKm"
+        android:layout_alignBottom="@+id/textViewSettingsKm"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="24dp"
+        android:ems="10"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/buttonSettingsDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editTextSettingsKm"
+        android:layout_below="@+id/editTextSettingsKm"
+        android:layout_marginTop="57dp"
+        android:text="@string/delete_historic" />
+
+    <Button
+        android:id="@+id/buttonSettingsDeleteLastShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonSettingsDelete"
+        android:layout_below="@+id/buttonSettingsDelete"
+        android:layout_marginTop="38dp"
+        android:text="@string/delete_last_share" />
+
+</RelativeLayout>

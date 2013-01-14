@@ -45,7 +45,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
+public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener{
 	
 	private GoogleMap mMap;
 	private Marker marker;
@@ -165,10 +165,24 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
     // defined by the NoticeDialogFragment.NoticeDialogListener interface
-    public void onDialogPositiveClick(DialogFragment dialog) {
+    public void onDialogPositiveClick(DialogFragment dialog, String place_name, String place_description) {
         // User touched the dialog's positive button
-    	Toast.makeText(this, "Position Shared", Toast.LENGTH_SHORT).show();
-
+    	final String PREFS_NAME = "MyPrefsFile";
+		float latitude;
+		float longitude;
+		int myID;
+		try {
+			SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);		
+			latitude = preferences.getFloat("last_latitude", 0);
+			longitude = preferences.getFloat("last_longitude", 0);
+			myID = preferences.getInt("myUserID", 0);
+		} catch(Exception e) {
+			latitude = 0;
+			longitude = 0;
+			myID = 0;
+		}
+    	String[] params_for_async = {place_name, String.valueOf(latitude), String.valueOf(longitude), String.valueOf(myID) , place_description};
+    	new putNewPlaceInDB().execute(params_for_async);
     }
 
     /**
@@ -188,6 +202,15 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		longitude = location.getLongitude();
 		altitude = location.getAltitude();
 		accuracy = location.getAccuracy();
+		
+		final String PREFS_NAME = "MyPrefsFile";		
+		
+		SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);
+		
+		Editor editor = preferences.edit();
+		editor.putFloat("last_latitude", (float)latitude);
+		editor.putFloat("last_longitude", (float)longitude );
+		editor.commit();
 		
 		if(this.marker !=null){
 			this.marker.remove(); 
@@ -421,12 +444,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	public void firstTimeEnable(int phone) {
 		final String PREFS_NAME = "MyPrefsFile";
 		
+		
+		
 		SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);
 		
 		Editor editor = preferences.edit();
 		editor.putBoolean("isFirst", false);
 		editor.putInt("myPhone", phone );
 		editor.commit();
+		
+		new getMyUserID().execute();
 	}
 	
 	
@@ -447,9 +474,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		  // Do something with value!
 			EditText edittext_phone = (EditText)input;
 			int phone = Integer.parseInt(edittext_phone.getText().toString());
-			firstTimeEnable(phone);
 			int[] phone_array = {phone};
 			new putContactInDB().execute(phone_array);
+			firstTimeEnable(phone);
 		  }
 		});
 
@@ -484,5 +511,74 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			}
 			
 	}
+	
+	private class getMyUserID extends AsyncTask<int[], Integer, Void>{
 		
+		
+		@Override
+		protected void onPreExecute() {			
+			MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(int[]... params) {
+			ArrayList list = new ArrayList();
+			final String PREFS_NAME = "MyPrefsFile";
+			adm_mysql_2.bd_access DB = new adm_mysql_2.bd_access("http://www.carlosexposito.es/");
+			int myPhone;
+			try {
+				
+				SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);		
+				myPhone = preferences.getInt("myPhone", 0);
+				
+			} catch (Exception e) {
+				myPhone = 0;
+			}
+			
+			list = DB.getContactByTelef(myPhone);
+					
+			SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);
+			
+			Editor editor = preferences.edit();
+			Log.v("tag", list.get(0).toString());
+			editor.putInt("myUserID", Integer.parseInt(list.get(0).toString()));
+			editor.commit();
+			
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			MainActivity.this.setProgressBarIndeterminateVisibility(false);
+			super.onPostExecute(result);
+		}
+		
+}
+
+	
+	private class putNewPlaceInDB extends AsyncTask<String[], Integer, Void> {
+
+		@Override
+		protected void onPreExecute() {			
+			MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(String[]... params) {
+			//int user_id;
+			//user_id = Integer.parseInt(params[0][3]);
+			adm_mysql_2.bd_access DB = new adm_mysql_2.bd_access("http://www.carlosexposito.es/");
+			DB.putPlace(params[0][0], Double.valueOf(params[0][1]).doubleValue(), Double.valueOf(params[0][2]).doubleValue(), Integer.parseInt(params[0][3]), params[0][4]);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			MainActivity.this.setProgressBarIndeterminateVisibility(false);
+			super.onPostExecute(result);
+		}
+		
+	}
 }

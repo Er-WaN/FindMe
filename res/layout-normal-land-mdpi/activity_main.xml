@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="horizontal">
+
+	<LinearLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="75dp"
+	    android:layout_height="fill_parent"
+	    android:background="@drawable/background"
+	    android:orientation="vertical"
+	    android:padding="2dp" >
+
+	  <ImageButton
+	    android:id="@+id/contact"
+	    style="@style/ButtonHomeNormalLandMDPI"
+	    android:onClick="onClickContact"
+	    android:src="@drawable/ic_menu_contacts"
+	     />
+	  <ImageButton
+	    android:id="@+id/group"
+	    style="@style/ButtonHomeNormalLandMDPI"
+	    android:onClick="onClickView"
+	    android:src="@drawable/ic_menu_view"
+	     />
+	  <ImageButton
+	    android:id="@+id/share"
+	    style="@style/ButtonHomeNormalLandMDPI"
+	    android:onClick="onClickShare"
+	    android:src="@drawable/ic_menu_share"
+	     />
+	  <ImageButton
+	    android:id="@+id/settings"
+	    style="@style/ButtonHomeNormalLandMDPI"
+	    android:onClick="onClickSettings"
+	    android:src="@drawable/ic_menu_settings"
+	     />
+	  
+	</LinearLayout>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:orientation="vertical">
+
+		<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+		  android:id="@+id/map"
+		  android:layout_width="fill_parent"
+		  android:layout_height="fill_parent"
+		  class="com.google.android.gms.maps.SupportMapFragment"/>
+
+		<Spinner
+		    android:id="@+id/spinner"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentLeft="true"
+		    android:layout_alignParentTop="true" />
+
+	</RelativeLayout>
+</LinearLayout>

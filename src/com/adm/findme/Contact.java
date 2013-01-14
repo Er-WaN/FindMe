@@ -26,7 +26,7 @@ import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 
-public class Contact extends android.support.v4.app.FragmentActivity implements ShareDialog.ShareDialogListener{
+public class Contact extends android.support.v4.app.FragmentActivity {
 
 	List<DataContact> contactos = new ArrayList<DataContact>();
 	List<DataGroup> grupos = new ArrayList<DataGroup>();
@@ -287,19 +287,6 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		
 	}
 	
-
-	@Override
-	public void onDialogPositiveClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDialogNegativeClick(DialogFragment dialog) {
-		// TODO Auto-generated method stub
-		
-
-	}	
 
 	/**This method format the phone number of each contact, obtaining a format like 6XXXXXXXX.
 	 * The first digit of the number will be 6 and the phone will have 9 digits*
