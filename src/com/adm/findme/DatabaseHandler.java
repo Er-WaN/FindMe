@@ -38,7 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			GROUP_NAME + " TEXT , " + GROUP_BLOCK + " INTEGER "	+ ")";
 	
 	public static final String CONTACT_GROUP_TABLE_CREATE = "CREATE TABLE " + CONTACT_GROUP_TABLE + " (" +
-			CG_CONTACT_ID + " INTEGER " +
+			CG_CONTACT_ID + " INTEGER, " +
 			CG_GROUP_ID + " INTEGER " +
 			")";
 	
@@ -66,6 +66,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('Friend', 0)");
 		db.execSQL("insert into Groups (Group_name, Group_block) values ('UPV', 0)");
+		
+		db.execSQL("insert into Contact_Group (Contact_id, Group_id) values (1, 1)"); 
 		
 	}
 

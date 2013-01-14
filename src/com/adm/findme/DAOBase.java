@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public abstract class DAOBase {
 
-	protected final static int VERSION = 10;
+	protected final static int VERSION = 14;
 	protected final static String NAME = "database.db";
 	
 	protected SQLiteDatabase mDb;

@@ -13,6 +13,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
@@ -38,7 +39,6 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	ArrayAdapter<String> adapter_group;
 	private ContactDAO contactsource;
 	private GroupDAO groupsource;
-	private GroupDAO groupsource2;
 
 	private ListAdapter listContacts; 	//Adapter that relates the listViewContacts with contactsList
 	private ListAdapter listgroups;		//Adapter that relates the listViewGroups with groupsList
@@ -93,6 +93,7 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		
 		/*Se leen los contactos del telefono y se muestran en pantalla a trav�s de AsyncTask*/
 		new LeerContactosAsyncTask().execute();
+		new GetGroupsAsyncTask().execute();
 		
 		listViewContacts.setTextFilterEnabled(true);
 		editTextSearchContact.addTextChangedListener(new TextWatcher() {
@@ -194,12 +195,12 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		switch (item.getItemId()) {	
 
 		case R.id.menu_update:
-			Toast.makeText(Contact.this, "pulsado item update", Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.menu_newGroup:
 			DialogFragment dialog = new CreateGroupDialog();
 			dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
-			Toast.makeText(Contact.this, "pulsado item new group", Toast.LENGTH_SHORT).show();
+			
+			
 			return true;
 		default:
 			Toast.makeText(Contact.this, "Invalid menu item selection.", Toast.LENGTH_LONG).show();
@@ -252,8 +253,33 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 
 			//Update graphical interface
 			adapter_contact = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,contactsList);	
-			adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
 			listViewContacts.setAdapter(adapter_contact);
+			Contact.this.setProgressBarIndeterminateVisibility(false);
+			super.onPostExecute(result);
+		}
+		
+	}
+	
+	private class GetGroupsAsyncTask extends AsyncTask<Void, Integer, Void>{
+
+		
+		@Override
+		protected void onPreExecute() {			
+			Contact.this.setProgressBarIndeterminateVisibility(true);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			groupsList = groupsource.getAllGroupsName();
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+
+			//Update graphical interface
+			adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
 			listViewGroups.setAdapter(adapter_group);	
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
@@ -320,19 +346,11 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 	
 	
 	public void onUpdateGroup() {
-		/*int i = 0;
-		groupsource2 = new GroupDAO(this);
-		groupsource2.open();
-		grupos = groupsource2.getAllgroups();
-				
-		List<String> groupsList = new ArrayList<String>();
+		Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
+		adapter_group.clear();
+		new GetGroupsAsyncTask().execute();
+		adapter_group.notifyDataSetChanged();
 		
-		for (int i = 0; i < grupos.size(); i++) {
-			groupsList.add(grupos.get(i).getName());
-		}
-		
-		adapter_group = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,groupsList);	
-		listViewGroups.setAdapter(adapter_group);	*/	
 	}
-
+	
 }

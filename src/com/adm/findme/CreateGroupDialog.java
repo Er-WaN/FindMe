@@ -1,46 +1,45 @@
 package com.adm.findme;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.adm.findme.ShareDialog.ShareDialogListener;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.text.Editable;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class CreateGroupDialog extends DialogFragment {
 
 	private GroupDAO groupDAO;
 	private ContactDAO contactDAO;
-	ArrayList mSelectedItems;
 
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-		
-		builder.setTitle(R.string.new_group_name);
-		builder.setView(inflater.inflate(R.layout.dialog_creategroup, null));
-		builder.setPositiveButton(R.string.new_group_create, new DialogInterface.OnClickListener() {
+		final EditText input = new EditText(getActivity());
+		input.setHint(R.string.new_group_hint);
+		AlertDialog.Builder dialogName = new AlertDialog.Builder(getActivity());
+		dialogName.setTitle(R.string.new_group);
+		dialogName.setView(input);
+		dialogName.setPositiveButton(R.string.new_group_next, new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				
+				String name = input.getText().toString();
+				if(name.length() > 0)
+				{
+					insertGroup(name);
+					DialogFragment dialog2 = new CreateGroupDialogContacts();
+					dialog2.show(getActivity().getSupportFragmentManager(), "CreateGroupDialogContacts");
+				}
+				else
+				{
+					Toast.makeText(getActivity(), R.string.new_group_valide, Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
-		builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		dialogName.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -49,26 +48,9 @@ public class CreateGroupDialog extends DialogFragment {
 			}
 		});
 
-		return builder.create();
+		return dialogName.create();
 		
-		/*AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());		 
-	    LayoutInflater inflater = getActivity().getLayoutInflater();
-	    View v = inflater.inflate(R.layout.dialog_creategroup, null);
-	    final View et = (EditText)v.findViewById(R.id.group_name);
-	    
-	    builder.setView(v);
-	    builder.setTitle(R.string.new_group);
-	    builder.setPositiveButton(R.string.new_group_create, new DialogInterface.OnClickListener() {
-	               @Override
-	               public void onClick(DialogInterface dialog, int id) {
-	            	   Contact c = new Contact();
-	               }
-	           });
-	    builder.setNegativeButton(R.string.new_group_cancel, new DialogInterface.OnClickListener() {
-	               public void onClick(DialogInterface dialog, int id) {
-	               }
-	           });      
-	    return builder.create();*/
+		
 	}
 	
 	public void insertGroup(String name) {
@@ -88,4 +70,5 @@ public class CreateGroupDialog extends DialogFragment {
 		}
 		return array_contacts_name;
 	}
+	
 }
