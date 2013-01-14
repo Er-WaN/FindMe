@@ -46,12 +46,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 	private List<String> groupsList;  	//Contains the names of the groups that will be shown in the listview
 	private EditText editTextSearchContact;
 	
-	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
-	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como par�metro. 
-
-	 * @author Carexcer
-	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telefono.
-	 * */
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +118,12 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		);
 	}
 	
+	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
+	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como par�metro. 
+
+	 * @author Carexcer
+	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telefono.
+	 * */
 	public ArrayList<DataContact> leerContactos(){
 		
 		ArrayList<DataContact> contactos = new ArrayList<DataContact>();		
@@ -244,7 +245,8 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			leerContactos();
+//			leerContactos();
+			leerContactosBDLocal();
 			return null;
 		}
 
@@ -271,7 +273,8 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			groupsList = groupsource.getAllGroupsName();
+			if(groupsource != null && groupsource.getAllGroupsName().size()>0)
+				groupsList = groupsource.getAllGroupsName();
 			return null;
 		}
 
@@ -279,8 +282,10 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		protected void onPostExecute(Void result) {
 
 			//Update graphical interface
-			adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
-			listViewGroups.setAdapter(adapter_group);	
+			if(groupsList!=null && groupsList.size() > 0 ){
+				adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
+				listViewGroups.setAdapter(adapter_group);
+			}
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
@@ -293,7 +298,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 	 * @param contacts - ArrayList of DataContact with phone numbers unformatted
 	 * @return ArrayList<DataContact> with all contacts with a number format like 6XXXXXXXX
 	 * @author carexcer*/
-	public ArrayList<DataContact> formatPhoneNumbers(ArrayList<DataContact> contacts){
+	public static ArrayList<DataContact> formatPhoneNumbers(ArrayList<DataContact> contacts){
 
 		int tam = contacts.size();
 		ArrayList<Integer> markedContacts = new ArrayList<Integer>();
@@ -340,4 +345,12 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		
 	}
 	
+	private void leerContactosBDLocal() {
+		
+		ContactDAO contactDAO = new ContactDAO(Contact.this);
+		contactDAO.open();
+		if(contactDAO.getAllContactsName() != null && contactDAO.getAllContactsName().size()>0)
+			contactsList =contactDAO.getAllContactsName(); 
+		
+	}
 }

@@ -43,7 +43,9 @@ public class ContactDAO extends DAOBase{
 		value.put(PHONENUMBER, phone);
 		value.put(FAVORITE, fav);
 		value.put(BLOCK, block);
+		
 		mDb.insert(TABLE_NAME, null, value);
+		
 	}
 	
 	public void favorite(DataContact contact) {
@@ -88,7 +90,23 @@ public class ContactDAO extends DAOBase{
 				contactList.add(cursor.getString(1));
 			} while (cursor.moveToNext());
 		}
+		cursor.close();
 		return contactList;
 	}
+	
+	
+	public boolean existsContactByTelf(String telef) {
+		
+		Cursor cursor = mDb.rawQuery("SELECT * FROM Contacts WHERE Contact_phonenumber = '" + telef + "';", null);
 
+		if (cursor.moveToFirst()){
+			cursor.close();
+			return true;
+		}
+		else {
+			cursor.close();
+			return false;
+		}	
+		
+	}
 }
