@@ -271,7 +271,8 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			groupsList = groupsource.getAllGroupsName();
+			if(groupsource != null && groupsource.getAllGroupsName().size()>0)
+				groupsList = groupsource.getAllGroupsName();
 			return null;
 		}
 
@@ -279,8 +280,10 @@ public class Contact extends android.support.v4.app.FragmentActivity implements 
 		protected void onPostExecute(Void result) {
 
 			//Update graphical interface
-			adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
-			listViewGroups.setAdapter(adapter_group);	
+			if(groupsList!=null && groupsList.size() > 0 ){
+				adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
+				listViewGroups.setAdapter(adapter_group);
+			}
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
