@@ -46,7 +46,7 @@ import java.util.HashMap;
 
 public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
 
-	private SettingsDAO settingsDAO;
+//	private SettingsDAO settingsDAO;
 	
 	private GoogleMap mMap;
 	private Marker marker;
