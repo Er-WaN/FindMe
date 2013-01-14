@@ -92,10 +92,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		    liste.add(element);
 		};
 		
-		if (this.checkFirstTime() == true)
+		if (this.checkFirstTime() == true){
 			firstTimeDialog();
+			new actualizarBDLocal().execute();
+		}
 		
-		new actualizarBDLocal().execute();
+		
 	}
 	
 	@Override
