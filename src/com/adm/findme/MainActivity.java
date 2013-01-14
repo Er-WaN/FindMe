@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,6 +31,7 @@ import java.util.List;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.util.Log;
@@ -93,6 +95,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		if (this.checkFirstTime() == true)
 			firstTimeDialog();
 		
+		new actualizarBDLocal().execute();
 	}
 	
 	@Override
@@ -463,7 +466,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	private class putContactInDB extends AsyncTask<int[], Integer, Void>{
 	
-			
 			@Override
 			protected void onPreExecute() {			
 				MainActivity.this.setProgressBarIndeterminateVisibility(true);
@@ -484,5 +486,91 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			}
 			
 	}
+	
+	/**function that return an ArrayList of DataContact of the contacts of the phonebook*/
+	public ArrayList<DataContact> leerContactosAgenda(){
 		
+		ArrayList<DataContact> contactos = new ArrayList<DataContact>();		
+		
+		Uri uri = ContactsContract.Contacts.CONTENT_URI;
+		String[] projection = new String[] { ContactsContract.Contacts._ID,ContactsContract.Contacts.DISPLAY_NAME};
+		
+		String selection = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = '1'";
+				
+		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + "= 'ASC'";
+		Cursor cursor = getContentResolver().query(uri, projection, selection, null, sortOrder);
+		while (cursor.moveToNext()) {
+			String displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+			Uri PURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+			String CID = ContactsContract.CommonDataKinds.Phone.CONTACT_ID;
+			String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+			Cursor pCur = getContentResolver().query(PURI,  null, CID + " = ?",  new String[]{id}, null);
+			pCur.moveToNext();
+			String PNUM = ContactsContract.CommonDataKinds.Phone.NUMBER;
+			String displayNumber = pCur.getString(pCur.getColumnIndex(PNUM));
+			pCur.close();
+			//El ultimo parametro es "block", que realmente hace referencia a la visibilidad. Por defecto, todos visibles
+			DataContact c1 = new DataContact(displayName, displayNumber, false, true);
+			contactos.add(c1);
+
+		}
+		cursor.close();
+		
+		contactos = Contact.formatPhoneNumbers(contactos);
+		
+		return contactos;
+	}
+	
+	
+	/**Recibe un arrayList con los contactos de la agenda. Inserta en la BD Local los contactos que estan 
+	 * en la agenda telefonica y que tienen la aplicacion FindMe instalada (lo sabe consultando al servidor)*/
+	public void insertarContactosEnBDLocal(ArrayList<DataContact> contactosAgenda){
+		
+		bd_access bdcon = new bd_access("http://www.carlosexposito.es/");
+		ContactDAO contactDAO = new ContactDAO(MainActivity.this.getApplicationContext());
+		contactDAO.open();	
+		int numContactosAgenda = contactosAgenda.size();
+		int telef=-1;
+		for(int i=0; i< numContactosAgenda; i++){
+			telef = Integer.valueOf(contactosAgenda.get(i).getPhoneNumber()).intValue();
+			ArrayList datos = bdcon.getContactByTelef(telef);
+			
+			if(datos.size()>0){
+				String phone = contactosAgenda.get(i).getPhoneNumber();
+				if(contactDAO.existsContactByTelf(phone) == false){ //sino existe
+					int block = (contactosAgenda.get(i).getBlock()) ? 1 : 0; 
+					String name = contactosAgenda.get(i).getName();
+					contactDAO.create(name, phone, 0, block);
+				}
+				
+			}
+		}
+		contactDAO.close();
+	}
+	
+	private class actualizarBDLocal extends AsyncTask<Void, Integer, Void>{
+
+		
+		@Override
+		protected void onPreExecute() {			
+			MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+
+			insertarContactosEnBDLocal(leerContactosAgenda());
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+
+			MainActivity.this.setProgressBarIndeterminateVisibility(false);
+			super.onPostExecute(result);
+		}
+		
+	}
+	/*fin codigo poxo*/
 }
