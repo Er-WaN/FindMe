@@ -35,6 +35,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -45,8 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MainActivity extends android.support.v4.app.FragmentActivity implements LocationListener, OnItemSelectedListener, OnInfoWindowClickListener, ShareDialog.ShareDialogListener, ViewDialogListener {
-
-	private SettingsDAO settingsDAO;
 	
 	private GoogleMap mMap;
 	private Marker marker;
@@ -71,6 +70,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 		setUpMapIfNeeded();
 		
@@ -445,9 +445,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 		public void onClick(DialogInterface dialog, int whichButton) {
 		  // Do something with value!
-			EditText phone = (EditText)input;
-			Toast.makeText(MainActivity.this, "test: "+phone.getText().toString(),  Toast.LENGTH_SHORT).show();
-			firstTimeEnable(Integer.parseInt(phone.getText().toString()));
+			EditText edittext_phone = (EditText)input;
+			int phone = Integer.parseInt(edittext_phone.getText().toString());
+			firstTimeEnable(phone);
+			int[] phone_array = {phone};
+			new putContactInDB().execute(phone_array);
 		  }
 		});
 
@@ -458,4 +460,29 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 
 		alert.show();
 	}
+	
+	private class putContactInDB extends AsyncTask<int[], Integer, Void>{
+	
+			
+			@Override
+			protected void onPreExecute() {			
+				MainActivity.this.setProgressBarIndeterminateVisibility(true);
+				super.onPreExecute();
+			}
+	
+			@Override
+			protected Void doInBackground(int[]... params) {
+				adm_mysql_2.bd_access DB = new adm_mysql_2.bd_access("http://www.carlosexposito.es/");
+				DB.putContact(params[0][0]);
+				return null;
+			}
+	
+			@Override
+			protected void onPostExecute(Void result) {
+				MainActivity.this.setProgressBarIndeterminateVisibility(false);
+				super.onPostExecute(result);
+			}
+			
+	}
+		
 }

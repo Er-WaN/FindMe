@@ -30,7 +30,7 @@ import android.widget.Toast;
 import android.widget.TextView;
 /**
  * Classe para el manejo de datos de la BBDD
- * todos lo metodos aquí utilizados actuan de interfaz de comunicación con el servidor
+ * todos lo metodos aquï¿½ utilizados actuan de interfaz de comunicaciï¿½n con el servidor
  *  @author Jose Luis
  */
 public class bd_access {
@@ -292,7 +292,7 @@ public class bd_access {
 	* Inserto el contacto en la BBDD introduciendo un numero de telefono
 	* Devuelve 0 si todo correcto
 	* Devuelve -1 si el valor esta repetido
-	* Devuelve -2 si ha habido un error en la petición
+	* Devuelve -2 si ha habido un error en la peticiï¿½n
 	* @param telef
 	*/
 	public int putContact(int telef){
@@ -334,7 +334,7 @@ public class bd_access {
 	* Inserto el contacto en la BBDD introduciendo un numero de telefono y el nick
 	* Devuelve 0 si todo correcto
 	* Devuelve -1 si el valor esta repetido
-	* Devuelve -2 si ha habido un error en la petición
+	* Devuelve -2 si ha habido un error en la peticiï¿½n
 	* @param telef
 	* @param nick
 	*/
@@ -544,10 +544,10 @@ public class bd_access {
 	}
 	
 	/**
-	* Inserto la ubicación en la BBDD introduciendo todos los parametros obligatorios
+	* Inserto la ubicaciï¿½n en la BBDD introduciendo todos los parametros obligatorios
 	* Devuelve 0 si todo correcto
 	* Devuelve -1 si el ID de usuario no existe en la BBDD
-	* Devuelve -2 si ha habido un error en la petición
+	* Devuelve -2 si ha habido un error en la peticiï¿½n
 	* @param name
 	* @param latitude
 	* @param longitude
@@ -588,7 +588,7 @@ public class bd_access {
 			     
 			     return 0;
 		     }catch(Exception e){
-		    	 //error de conexión
+		    	 //error de conexiï¿½n
 		         Log.e("log_tag", "Error in http connection"+e.toString());
 		         return -2;
 		    }
@@ -596,10 +596,10 @@ public class bd_access {
 	}
 	
 	/**
-	* Inserto la ubicación en la BBDD introduciendo todos los parametros obligatorios y no obligatorios
+	* Inserto la ubicaciï¿½n en la BBDD introduciendo todos los parametros obligatorios y no obligatorios
 	* Devuelve 0 si todo correcto
 	* Devuelve -1 si el ID de usuario no existe en la BBDD
-	* Devuelve -2 si ha habido un error en la petición
+	* Devuelve -2 si ha habido un error en la peticiï¿½n
 	* @param name
 	* @param latitude
 	* @param longitude
@@ -640,7 +640,7 @@ public class bd_access {
 			     
 			     return 0;
 		     }catch(Exception e){
-		    	 //error de conexión
+		    	 //error de conexiï¿½n
 		         Log.e("log_tag", "Error in http connection"+e.toString());
 		         return -2;
 		    }
@@ -679,7 +679,7 @@ public class bd_access {
 			     
 			     return 0;
 		     }catch(Exception e){
-		    	 //error de conexión
+		    	 //error de conexiï¿½n
 		         Log.e("log_tag", "Error in http connection"+e.toString());
 		         return -2;
 		    }
@@ -718,7 +718,7 @@ public class bd_access {
 			     
 			     return 0;
 		     }catch(Exception e){
-		    	 //error de conexión
+		    	 //error de conexiï¿½n
 		         Log.e("log_tag", "Error in http connection"+e.toString());
 		         return -2;
 		    }
