@@ -268,6 +268,8 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		@Override
 		protected void onPreExecute() {			
 			Contact.this.setProgressBarIndeterminateVisibility(true);
+			groupsource = new GroupDAO(Contact.this);
+			groupsource.open();
 			super.onPreExecute();
 		}
 
