@@ -29,9 +29,14 @@ public class CreateGroupDialog extends DialogFragment {
 				String name = input.getText().toString();
 				if(name.length() > 0)
 				{
-					insertGroup(name);
-					DialogFragment dialog2 = new CreateGroupDialogContacts();
-					dialog2.show(getActivity().getSupportFragmentManager(), "CreateGroupDialogContacts");
+					if (getIfGroupAlreadyExists(name)) {
+						Toast.makeText(getActivity(), R.string.group_already_exists, Toast.LENGTH_SHORT).show();
+					}
+					else {
+						insertGroup(name);
+						DialogFragment dialog2 = new CreateGroupDialogContacts();
+						dialog2.show(getActivity().getSupportFragmentManager(), "CreateGroupDialogContacts");
+					}
 				}
 				else
 				{
@@ -56,7 +61,9 @@ public class CreateGroupDialog extends DialogFragment {
 	public void insertGroup(String name) {
 		groupDAO = new GroupDAO(this.getActivity().getApplicationContext());
 		groupDAO.open();
-		groupDAO.create(name);	
+		groupDAO.create(name);
+		groupDAO.close();
+		
 	}
 	
 	public String[] getContactsName() {
@@ -68,7 +75,16 @@ public class CreateGroupDialog extends DialogFragment {
 		for (int i = 0; i < list_contacts_name.size(); i++) {
 			array_contacts_name[i] = list_contacts_name.get(i);
 		}
+		contactDAO.close();
 		return array_contacts_name;
 	}
 	
+	public boolean getIfGroupAlreadyExists(String group_name) {
+		boolean isExists;
+		groupDAO = new GroupDAO(getActivity());
+		groupDAO.open();
+		isExists = groupDAO.checkIfGroupExist(group_name);
+		groupDAO.close();
+		return isExists;
+	}
 }

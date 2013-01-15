@@ -11,7 +11,7 @@ import android.widget.Toast;
 public class ContactDAO extends DAOBase{
 	
 	public static final String TABLE_NAME = "Contacts";
-	public static final String ID = "Contact_id";
+	public static final String ID = "_id";
 	public static final String NAME = "Contact_name";
 	public static final String PHONENUMBER = "Contact_phonenumber";
 	public static final String FAVORITE = "Contact_favorite";
@@ -109,4 +109,14 @@ public class ContactDAO extends DAOBase{
 		}	
 		
 	}
+	
+	public int getNumberOfContacts() {
+		Cursor cursor;
+		int nb;
+		cursor = mDb.rawQuery("SELECT _id AS nb FROM Contacts", null);
+		nb = cursor.getInt(0);
+		cursor.close();
+		return nb;
+	}
+
 }

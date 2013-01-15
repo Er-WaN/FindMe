@@ -2,31 +2,48 @@ package com.adm.findme;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.util.Log;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
 
+
+/**
+ * This class create the DialogAlert with a list a all the contact in the Database.
+ * User needs to select which contact he wants to add in the new group
+ * 
+ * @author Erwan Thouvenot
+ * **/
 public class CreateGroupDialogContacts extends DialogFragment{
 
 	ContactDAO contactDAO;
 	GroupDAO groupDAO;
+	ContactGroupDAO contactgroupDAO;
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-	    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		//Create AlertDialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+	    
+		// Create List of String with contacts name inside
 	    List<String> list = new ArrayList<String>();
 	    list = getContactsName();
-	    final CharSequence[] charSequenceItems = list.toArray(new CharSequence[list.size()]);
+	    
+	    // Create a array of boolean of the same size than list with false inside
+	    final boolean[] selected = new boolean[list.size()];
+
+	    // Create a CharSequence[] with name of contacts inside
+	    final CharSequence[] options = list.toArray(new CharSequence[list.size()]);
 	    
 	    builder.setTitle(R.string.new_group);
-	    builder.setMultiChoiceItems(charSequenceItems, null, new DialogInterface.OnMultiChoiceClickListener() {
+	    builder.setMultiChoiceItems(options, selected, new DialogInterface.OnMultiChoiceClickListener() {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 	    
@@ -35,6 +52,7 @@ public class CreateGroupDialogContacts extends DialogFragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
+				deleteLastGroup();
 				
 			}
 		});
@@ -42,26 +60,73 @@ public class CreateGroupDialogContacts extends DialogFragment{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
-				
+				// When user clicks on Positive Button, we call the insertContactsInGroup method
+				insertContacts(options, selected);
 			}
 		});	
 	    return builder.create();
 	}
 
-	public List getContactsName() {
+	/**
+	 * Method to get the name of all the contacts in the internal Database
+	 * @return contact_list_by_name List of all contacts with their names.
+	 */	
+	public List<String> getContactsName() {
 		List<String> contact_list_by_name = new ArrayList<String>();
-		contactDAO = new ContactDAO(getActivity().getApplicationContext());
+		contactDAO = new ContactDAO(getActivity());
 		contactDAO.open();
 		contact_list_by_name = contactDAO.getAllContactsName();
+		contactDAO.close();
 		return contact_list_by_name;
 	}
 	
-	public int getListGroupId() {
-		int LastGroupId;
-		groupDAO = new GroupDAO(getActivity().getApplicationContext());
-		LastGroupId = groupDAO.mDb.rawQuery("SELECT last_insert_rowid()", null).getInt(0);
-		return LastGroupId;
+	/**
+	 * Method to get the ID of the last group created in the internal database.
+	 * @return lastGroupId The id of the last created group in the internal database.
+	 */
+	public int getLastGroupId() {
+		int lastGroupId;
+		groupDAO = new GroupDAO(getActivity());
+		groupDAO.open();
+		lastGroupId = groupDAO.getLastGroupId();
+		groupDAO.close();
+		return lastGroupId;
 	}
 	
+	
+	/**
+	 * Method to get the id of a contact depending of it name
+	 * @return group_idthe id of the selected group.
+	 * @param name The name of the group we want to know the id.
+	 */
+	public int getGroupId(String name) {
+		groupDAO = new GroupDAO(getActivity());
+		int group_id;
+		groupDAO.open();
+		group_id = groupDAO.getGroupId(name);
+		groupDAO.close();
+		return group_id;
+	}
+	
+	/**
+	 * Method to insert contacts in a group.
+	 */
+	protected void insertContacts(CharSequence[] options, boolean[] selected) {
+		contactgroupDAO = new ContactGroupDAO(getActivity());
+		contactgroupDAO.open();
+		for ( int i = 0; i < options.length; i++) {
+			if (selected[i] == true ) {
+				contactgroupDAO.insertContactIntoGroup(getLastGroupId(), i+1);
+			}
+		}
+		contactgroupDAO.close();
+	}
+	
+	/**
+	 * Method to delete the last group in the database.
+	 */
+	public void deleteLastGroup() {
+		groupDAO = new GroupDAO(getActivity());
+		groupDAO.deleteLastGroup();
+	}
 }
