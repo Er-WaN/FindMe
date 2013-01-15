@@ -30,12 +30,10 @@ import java.util.List;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -53,8 +51,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	private Marker marker;
 	public Marker paris;
 	
-	
-	public String[][] contactlist= new String[0][0];
+	public String[][] contactlist = new String[0][0];
 	
 	List<HashMap<String, String>> liste = new ArrayList<HashMap<String, String>>();
 	HashMap<String, String> element;
@@ -65,8 +62,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	double latitude;
 	double longitude;
-	private double altitude;
-	private float accuracy;
 		
 	int i = 0;
 	
@@ -93,11 +88,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		    liste.add(element);
 		};
 		
-		if (this.checkFirstTime() == true)
+		if (this.checkFirstTime() == true) {
 			firstTimeDialog();
+			new actualizarBDLocal().execute();
+		}
 		
-		new actualizarBDLocal().execute();
-		//new printPlaces().execute();
+			
+		
+		
 	}
 	
 	@Override
@@ -205,8 +203,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	public void onLocationChanged(Location location) {
 		latitude = location.getLatitude();
 		longitude = location.getLongitude();
-		altitude = location.getAltitude();
-		accuracy = location.getAccuracy();
 		
 		final String PREFS_NAME = "MyPrefsFile";		
 		
@@ -216,8 +212,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		editor.putFloat("last_latitude", (float)latitude);
 		editor.putFloat("last_longitude", (float)longitude );
 		editor.commit();
-		
 		updateMap();
+
 	}
 
 	@Override
@@ -329,7 +325,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		{
 			float f = Float.parseFloat(contactlist[i][2]);
 			double d = Double.parseDouble(contactlist[i][3]);
-			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0] + " \n" +  contactlist[i][1]).snippet(contactlist[i][4] + ":\n" + contactlist[i][5]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0]).snippet(contactlist[i][1]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 			this.marker = mMap.addMarker(mo);
 		};
 		
@@ -395,6 +391,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		return true;
 		}
 		
+		
 		@Override
 		protected void onPostExecute(Boolean result) {
 		// TODO Auto-generated method stub
@@ -402,7 +399,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			int cont = 0,cn=0;
 			MarkerOptions mo;
 			ArrayList contact= new ArrayList();
-			contactlist=new String[places.size()][6];
+			contactlist=new String[places.size()][4];
 			while(cont<places.size()){
 				
 				//Pinto la marca correspondiente a una publicacion
@@ -413,8 +410,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 					contactlist[cn][1] = places.get(cont).get(7).toString();
 					contactlist[cn][2] = places.get(cont).get(5).toString();
 					contactlist[cn][3] = places.get(cont).get(6).toString();
-					contactlist[cn][4] = places.get(cont).get(2).toString();
-					contactlist[cn][5] = places.get(cont).get(3).toString();
 					
 					cn++;
 				}
@@ -423,6 +418,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			
 			updateMap();
 		}
+		
 		
 		public class claseLocation implements LocationListener {
 
@@ -657,7 +653,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		protected void onPostExecute(Void result) {
 
 			MainActivity.this.setProgressBarIndeterminateVisibility(false);
-			
 			super.onPostExecute(result);
 		}
 

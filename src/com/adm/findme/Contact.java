@@ -206,8 +206,6 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		case R.id.menu_newGroup:
 			DialogFragment dialog = new CreateGroupDialog();
 			dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
-
-
 			return true;
 		default:
 			Toast.makeText(Contact.this, "Invalid menu item selection.", Toast.LENGTH_LONG).show();
@@ -313,6 +311,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 									case 0:
 										deleteGroup(name_group);
 										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
+										onUpdateGroup();
 										break;
 									case 1:
 										disableBlock(name_group);
@@ -330,6 +329,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 									switch (which) {
 									case 0:
 										deleteGroup(name_group);
+										onUpdateGroup();
 										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
 										break;
 									case 1:
@@ -398,13 +398,21 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 
 
-	public void onUpdateGroup() {
+	/*public void onUpdateGroup(List groupsList) {
 		Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
 		adapter_group.clear();
 		new GetGroupsAsyncTask().execute();
+		if (groupsList != null){
+
+	        for (Object object : groupsList) {
+
+	        	adapter_group.insert(object, adapter_group.getCount());
+	        }
+	    }
+
 		adapter_group.notifyDataSetChanged();
 
-	}
+	}*/
 
 	private void leerContactosBDLocal() {
 
@@ -485,6 +493,12 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		groupsource.open();
 		groupsource.disableBlock(name);
 		groupsource.close();
+	}
+	
+	public void onUpdateGroup() {
+		adapter_group.clear();
+		new GetGroupsAsyncTask().execute();
+		adapter_group.notifyDataSetChanged();
 	}
 	
 }
