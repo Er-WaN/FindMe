@@ -61,7 +61,7 @@ public class CreateGroupDialogContacts extends DialogFragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// When user clicks on Positive Button, we call the insertContactsInGroup method
-				insertContacts(options, selected);
+				insertContacts(options, selected); 
 			}
 		});	
 	    return builder.create();
@@ -116,10 +116,13 @@ public class CreateGroupDialogContacts extends DialogFragment{
 		contactgroupDAO.open();
 		for ( int i = 0; i < options.length; i++) {
 			if (selected[i] == true ) {
-				contactgroupDAO.insertContactIntoGroup(getLastGroupId(), i+1);
+				int contact_id;
+				contact_id = getContactId(String.valueOf(options[i+1]));
+				contactgroupDAO.insertContactIntoGroup(getLastGroupId(), contact_id);
 			}
 		}
 		contactgroupDAO.close();
+		Toast.makeText(getActivity(), R.string.group_created, Toast.LENGTH_SHORT).show();
 	}
 	
 	/**
@@ -128,5 +131,15 @@ public class CreateGroupDialogContacts extends DialogFragment{
 	public void deleteLastGroup() {
 		groupDAO = new GroupDAO(getActivity());
 		groupDAO.deleteLastGroup();
+		groupDAO.close();
+	}
+	
+	public int getContactId(String name) {
+		int contact_id;
+		contactDAO = new ContactDAO(getActivity());
+		contactDAO.open();
+		contact_id = contactDAO.getIdContact(name);
+		contactDAO.close();
+		return contact_id;
 	}
 }

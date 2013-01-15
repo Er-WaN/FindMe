@@ -59,6 +59,7 @@
     <string name="new_group_hint">Name of the group</string>
     <string name="new_group_valide">Enter a valide name</string>
     <string name="group_already_exists">This group already exists</string>
+    <string name="group_created">Group created</string>
     
     <!-- First Time Dialog -->
 	<string name="first_time_dialog_title">First use</string>

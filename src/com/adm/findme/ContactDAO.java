@@ -118,5 +118,14 @@ public class ContactDAO extends DAOBase{
 		cursor.close();
 		return nb;
 	}
+	
+	public int getIdContact(String contact_name) {
+		int contact_id;
+		Cursor cursor;
+		cursor = mDb.rawQuery("SELECT _id FROM Contacts WHERE Contact_name = ?", new String[] {contact_name});
+		contact_id = cursor.getInt(0);
+		cursor.close();
+		return contact_id;
+	}
 
 }
