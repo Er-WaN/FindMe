@@ -2,13 +2,18 @@ package com.adm.findme;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.adm.findme.ShareDialog.ShareDialogListener;
+
 import android.util.Log;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory.Options;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
 
@@ -24,6 +29,29 @@ public class CreateGroupDialogContacts extends DialogFragment{
 	ContactDAO contactDAO;
 	GroupDAO groupDAO;
 	ContactGroupDAO contactgroupDAO;
+	
+	
+	/*public interface CreateGroupContactDialogListener {
+        public void onDialogGroupPositiveClick(DialogFragment dialog, boolean update);
+        public void onDialogGroupNegativeClick(DialogFragment dialog);
+    }
+	
+	
+	CreateGroupContactDialogListener mListener;
+    
+	@Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Verify that the host activity implements the callback interface
+        try {
+            // Instantiate the ShareDialogListener so we can send events to the host
+            mListener = (CreateGroupContactDialogListener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement CreateGroupContactDialogListener");
+        }
+    }*/
 	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		//Create AlertDialog
@@ -44,6 +72,7 @@ public class CreateGroupDialogContacts extends DialogFragment{
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+				Toast.makeText(getActivity(), "click", Toast.LENGTH_SHORT).show();
 			}
 		});
 	    
@@ -61,7 +90,9 @@ public class CreateGroupDialogContacts extends DialogFragment{
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// When user clicks on Positive Button, we call the insertContactsInGroup method
-				insertContacts(options, selected); 
+				boolean update;
+				update = insertContacts(options, selected); 
+				//mListener.onDialogGroupPositiveClick(CreateGroupDialogContacts.this, update);
 			}
 		});	
 	    return builder.create();
@@ -111,18 +142,19 @@ public class CreateGroupDialogContacts extends DialogFragment{
 	/**
 	 * Method to insert contacts in a group.
 	 */
-	protected void insertContacts(CharSequence[] options, boolean[] selected) {
+	protected boolean insertContacts(CharSequence[] options, boolean[] selected) {
 		contactgroupDAO = new ContactGroupDAO(getActivity());
 		contactgroupDAO.open();
 		for ( int i = 0; i < options.length; i++) {
 			if (selected[i] == true ) {
 				int contact_id;
-				contact_id = getContactId(String.valueOf(options[i+1]));
+				contact_id = getContactId(""+options[i]);
 				contactgroupDAO.insertContactIntoGroup(getLastGroupId(), contact_id);
 			}
 		}
 		contactgroupDAO.close();
 		Toast.makeText(getActivity(), R.string.group_created, Toast.LENGTH_SHORT).show();
+		return true;
 	}
 	
 	/**

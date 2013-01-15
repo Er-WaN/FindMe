@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ContactDAO extends DAOBase{
@@ -94,7 +95,12 @@ public class ContactDAO extends DAOBase{
 		return contactList;
 	}
 	
-	
+	/**
+     * Method to know if a contact exist in  the database.
+     * @param  String the phone number of the contact
+     * @return boolean true if the contact exists
+     * 
+     * **/
 	public boolean existsContactByTelf(String telef) {
 		
 		Cursor cursor = mDb.rawQuery("SELECT * FROM Contacts WHERE Contact_phonenumber = '" + telef + "';", null);
@@ -110,6 +116,12 @@ public class ContactDAO extends DAOBase{
 		
 	}
 	
+	/**
+     * Method to get number of contacts in the database.
+     * 
+     * @return int The number of contacts
+     * 
+     * **/
 	public int getNumberOfContacts() {
 		Cursor cursor;
 		int nb;
@@ -119,11 +131,18 @@ public class ContactDAO extends DAOBase{
 		return nb;
 	}
 	
+	/**
+     * Method to get the id of an contact
+     * @param  String the name of the group.
+     * @return int The id of the contact.
+     * 
+     * **/
 	public int getIdContact(String contact_name) {
 		int contact_id;
 		Cursor cursor;
 		cursor = mDb.rawQuery("SELECT _id FROM Contacts WHERE Contact_name = ?", new String[] {contact_name});
-		contact_id = cursor.getInt(0);
+		cursor.moveToFirst();
+		contact_id = Integer.valueOf(cursor.getInt(0));
 		cursor.close();
 		return contact_id;
 	}
@@ -135,8 +154,8 @@ public class ContactDAO extends DAOBase{
 	public void enableBlock(String contact_name) {
 		ContentValues value = new ContentValues();
 		value.put(BLOCK, 1);
-//		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
-		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=1 WHERE " + NAME + "= '" + contact_name + "' ;" );
+		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
+//		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=1 WHERE " + NAME + "= '" + contact_name + "' ;" );
 	}
 	
 	/**
@@ -146,8 +165,8 @@ public class ContactDAO extends DAOBase{
 	public void disableBlock(String contact_name) {
 		ContentValues value = new ContentValues();
 		value.put(BLOCK, 0);
-//		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
-		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=0 WHERE " + NAME + "= '" + contact_name + "' ;" );
+		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
+//		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=0 WHERE " + NAME + "= '" + contact_name + "' ;" );
 	}
 
 }

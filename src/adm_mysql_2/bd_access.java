@@ -724,4 +724,89 @@ public class bd_access {
 		    }
 		}
 	}
+	
+	public ArrayList getLastPlaceByUser(int ID_user){
+		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		
+		//http post
+		try{
+		     HttpClient httpclient = new DefaultHttpClient();
+		     String serv=this.servidor+"get_last_place_by_user.php";
+		     HttpPost httppost = new HttpPost(serv);
+		     
+		     String user = Integer.toString(ID_user);
+		     nameValuePairs.add(new BasicNameValuePair("ID_user", user));
+		     //asigno los pares de valores a la llamado HTTPPOST
+		     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		     
+		     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+		     //LLAMADA HTTPPOST
+		     HttpResponse response = httpclient.execute(httppost);
+		     //RECIBO RESPUESTA
+		     HttpEntity entity = response.getEntity();
+		     //SE ASIGNA A UN INPUTSTREAM
+		     is = entity.getContent();
+		     }catch(Exception e){
+		         Log.e("log_tag", "Error in http connection"+e.toString());
+		    }
+		
+		
+		
+		//convert response to string
+		try{
+		      BufferedReader reader = new BufferedReader(new InputStreamReader(is,"iso-8859-1"),8);
+		       sb = new StringBuilder();
+		       sb.append(reader.readLine() + "\n");
+
+		       String line="0";
+		       while ((line = reader.readLine()) != null) {
+		                      sb.append(line + "\n");
+		        }
+		        is.close();
+		        result=sb.toString();
+		        }catch(Exception e){
+		              Log.e("log_tag", "Error converting result "+e.toString());
+		  }
+		
+		
+	   
+		//paring data
+		ArrayList place= new ArrayList();
+		int ID_place=0,user=0;
+		String name="",desc="",date_creation="";
+		double latitude=0.0,longitude=0.0;
+		try{
+			//obtengo el objeto JSON
+		      jArray = new JSONArray(result);
+		      JSONObject json_data=null;
+		      //recorro los resultados obtenidos por la respuesta formateda del HTTPPOST.response
+		      for(int i=0;i<jArray.length();i++){
+		    	 
+		             json_data = jArray.getJSONObject(i);
+		             user=json_data.getInt("ID_user");
+		             place.add(user);
+		             ID_place=json_data.getInt("ID_place");
+		             place.add(ID_place);
+		             name=json_data.getString("name");
+		             place.add(name);
+		             desc=json_data.getString("descripcion");
+		             place.add(desc);
+		             date_creation=json_data.getString("date_creation");
+		             place.add(date_creation);
+		             latitude=json_data.getDouble("latitude");
+		             place.add(latitude);
+		             longitude=json_data.getDouble("longitude");
+		             place.add(longitude);
+		             
+		       }
+		      //Log.e("log_tag", "Error converting result "+places.toString());
+		      
+		 }
+		catch(JSONException e1){
+		    	  e1.printStackTrace();
+		} catch (ParseException e1) {
+					e1.printStackTrace();
+		}
+		return place;
+	}
 }
