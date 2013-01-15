@@ -46,6 +46,8 @@
     <string name="searchBox">Search contact</string>
     <string name="title_activity_create_group">CreateGroup</string>
     <string name="delete_group_success">The group was deleted</string>
+    <string name="set_visible_group">Group set to visible</string>
+    <string name="set_invisible_group">Group set to invisible</string>
 
     <!-- Create Group -->
     <string name="new_group">New Group</string>
@@ -56,6 +58,7 @@
     <string name="new_group_cancel">Cancel</string>
     <string name="new_group_hint">Name of the group</string>
     <string name="new_group_valide">Enter a valide name</string>
+    <string name="group_already_exists">This group already exists</string>
     
     <!-- First Time Dialog -->
 	<string name="first_time_dialog_title">First use</string>

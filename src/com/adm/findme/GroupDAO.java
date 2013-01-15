@@ -46,7 +46,7 @@ public class GroupDAO extends DAOBase {
 	
 	/**
      * Method to delete a Group
-     * @params Object DataGroup
+     * @param Object DataGroup
      * **/
 	public void delete(DataGroup group) {
 		mDb.delete(TABLE_NAME, ID + " = ?", new String[] {String.valueOf(group.getId())});
@@ -64,18 +64,24 @@ public class GroupDAO extends DAOBase {
 	
 	/**
      * Method to know if a group is block.
+     * @param group_name String, the name of the group
      * @return isBlock Boolean, if true the group is block. 
      * **/
 	public boolean getIfBlock(String group_name) {
 		Cursor cursor;
 		boolean isBlock;
-		cursor = mDb.rawQuery("SELECT Group_block FROM Groups WHERE Group_name = " + group_name, null);
+		cursor = mDb.rawQuery("SELECT Group_block FROM Groups WHERE Group_name = ?", new String[] {group_name});
 		cursor.moveToFirst();
 		isBlock = (cursor.getInt(0) == 0 ? false : true);
 		cursor.close();
 		return isBlock;
 	}
 	
+	/**
+     * Method to know if a group is block.
+     * @param group_id int, the id of the group
+     * @return isBlock Boolean, if true the group is block. 
+     * **/
 	public boolean getIfBlock(int group_id) {
 		Cursor cursor;
 		boolean isBlock;
@@ -87,8 +93,28 @@ public class GroupDAO extends DAOBase {
 	}
 	
 	/**
+     * Method to enable block for a group.
+     * @param String the name of the group.
+     * **/
+	public void enableBlock(String group_name) {
+		ContentValues value = new ContentValues();
+		value.put(BLOCK, 1);
+		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {group_name});
+	}
+	
+	/**
+     * Method to disable block for a group.
+     * @param String The name of the group.
+     * **/
+	public void disableBlock(String group_name) {
+		ContentValues value = new ContentValues();
+		value.put(BLOCK, 0);
+		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {group_name});
+	}
+	
+	/**
      * Method to get the id of the last group created in the database.
-     * @return groupList 
+     * @return List List of DataGroup. 
      * **/
 	public List<DataGroup> getAllgroups() {
 		List<DataGroup> groupList = new ArrayList<DataGroup>();
@@ -177,6 +203,24 @@ public class GroupDAO extends DAOBase {
      * **/
 	public void deleteGroup(int group_id) {
 		mDb.execSQL("DELETE FROM Groups WHERE _id = " + group_id);
+	}
+	
+	/**
+     * Method to delete a group.
+     * @params group_name String, the bame of the group.
+     * 
+     * **/
+	public void deleteGroup(String name) {
+		mDb.delete(TABLE_NAME, NAME + " = ? ", new String[] {name});
+	}
+	
+	public boolean checkIfGroupExist(String group_name) {
+		Cursor cursor;
+		boolean exists;
+		cursor = mDb.rawQuery("SELECT 1 FROM Groups WHERE Group_name = ?" , new String[] {group_name});
+		exists = (cursor.getCount() > 0);
+		cursor.close();
+		return exists;
 	}
 	
 }

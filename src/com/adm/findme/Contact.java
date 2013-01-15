@@ -28,6 +28,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -293,47 +294,48 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 				adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
 				listViewGroups.setAdapter(adapter_group);
 				listViewGroups.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
+										
 					@Override
 					public boolean onItemLongClick(AdapterView<?> arg0,
 							View arg1, final int arg2, long arg3) {
-						final int group_id = arg2 + 1;
-						Log.v("LOG", "test1");
-						if (true) {
-							Log.v("LOG", "test2");
-							CharSequence[] items = {"Delete group", "Put visible"};
-							Log.v("LOG", "test3");
+						
+						final TextView textview_name_group = (TextView)arg1;
+						final String name_group = textview_name_group.getText().toString();
+						final boolean isBlock = getIfGroupBlock(name_group);
+						
+						if (isBlock) {
+							CharSequence[] items = {"Delete group", "Set visible"};
 							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
-							builder.setTitle(String.valueOf(arg2));
-							Log.v("LOG", "test4");
+							builder.setTitle("Group: "+name_group);
 							builder.setItems(items, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
-									Log.v("LOG", "test5");
 									switch (which) {
 									case 0:
-										Log.v("LOG", "test5");
-										deleteGroup(arg2);
+										deleteGroup(name_group);
 										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
 										break;
 									case 1:
-										Log.v("LOG", "test6");
+										disableBlock(name_group);
+										Toast.makeText(Contact.this, R.string.set_visible_group, Toast.LENGTH_SHORT).show();
 										break;
 									}
 								};});
 							builder.show();
 						} else {
-							CharSequence[] items = {"Delete group", "Put invisible"};
+							CharSequence[] items = {"Delete group", "Set invisible"};
 							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
-							builder.setTitle("Groups");
+							builder.setTitle("Group: "+name_group);
 							builder.setItems(items, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
 									switch (which) {
 									case 0:
-										deleteGroup(group_id);
+										deleteGroup(name_group);
 										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
 										break;
 									case 1:
-
+										Log.v("log", "block: false");
+										enableBlock(name_group);
+										Toast.makeText(Contact.this, R.string.set_invisible_group, Toast.LENGTH_SHORT).show();
 										break;
 									}
 								};});
@@ -415,8 +417,8 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 	/**
 	 * Method to know if a group is block.
-	 * @param group_name String, the name of the group
-	 * @return isBlock Boolean, if true the group is block. 
+	 * @param String the name of the group
+	 * @return Boolean if true the group is block. 
 	 * **/
 	public boolean getIfGroupBlock(String group_name) {
 		boolean isBlock;
@@ -429,8 +431,8 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 	/**
 	 * Method to know if a group is block.
-	 * @param group_id int, the id of the group
-	 * @return isBlock Boolean, if true the group is block. 
+	 * @param int the id of the group
+	 * @return Boolean if true the group is block. 
 	 * **/
 	public boolean getIfGroupBlock(int group_id) {
 		boolean isBlock;
@@ -443,16 +445,46 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 	/**
 	 * Method delete a group.
-	 * @param group_id int, the id of the group
+	 * @param int The id of the group.
 	 * **/
 	public void deleteGroup(int group_id) {
-		Log.v("LOG", "test6");
 		groupsource = new GroupDAO(Contact.this);
-		Log.v("LOG", "test7");
 		groupsource.open();
-		Log.v("LOG", "test8");
 		groupsource.deleteGroup(group_id);
-		Log.v("LOG", "test9");
 		groupsource.close();
 	}
+	
+	/**
+	 * Method delete a group.
+	 * @param String The name of the group.
+	 * **/
+	public void deleteGroup(String group_name) {
+		groupsource = new GroupDAO(Contact.this);
+		groupsource.open();
+		groupsource.deleteGroup(group_name);
+		groupsource.close();
+	}
+	
+	/**
+	 * Method to enable block for a group.
+	 * @param String The name of the group.
+	 * **/
+	public void enableBlock(String name) {
+		groupsource = new GroupDAO(Contact.this);
+		groupsource.open();
+		groupsource.enableBlock(name);
+		groupsource.close();
+	}
+	
+	/**
+	 * Method to disable block for a group.
+	 * @param String The name of the group.
+	 * **/
+	public void disableBlock(String name) {
+		groupsource = new GroupDAO(Contact.this);
+		groupsource.open();
+		groupsource.disableBlock(name);
+		groupsource.close();
+	}
+	
 }
