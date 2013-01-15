@@ -127,5 +127,27 @@ public class ContactDAO extends DAOBase{
 		cursor.close();
 		return contact_id;
 	}
+	
+	/**
+     * Method to enable block for a contact.
+     * @param String the name of the contact.
+     * **/
+	public void enableBlock(String contact_name) {
+		ContentValues value = new ContentValues();
+		value.put(BLOCK, 1);
+//		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
+		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=1 WHERE " + NAME + "= '" + contact_name + "' ;" );
+	}
+	
+	/**
+     * Method to disable block for a contact.
+     * @param String The name of the contact.
+     * **/
+	public void disableBlock(String contact_name) {
+		ContentValues value = new ContentValues();
+		value.put(BLOCK, 0);
+//		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
+		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=0 WHERE " + NAME + "= '" + contact_name + "' ;" );
+	}
 
 }

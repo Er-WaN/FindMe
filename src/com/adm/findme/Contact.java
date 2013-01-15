@@ -22,7 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -259,9 +262,59 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		@Override
 		protected void onPostExecute(Void result) {
 
-			//Update graphical interface
-			adapter_contact = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,contactsList);	
-			listViewContacts.setAdapter(adapter_contact);
+			//Update graphical interface //simple_list_item_1
+			adapter_contact = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_multiple_choice,contactsList);
+			
+			if(contactsList!=null) 
+				listViewContacts.setAdapter(adapter_contact);
+			
+			ContactDAO cdao1 = new ContactDAO(Contact.this);
+			cdao1.open();
+			List<DataContact> contacts1 = cdao1.getAllContacts();
+			int tam = contacts1.size();
+			int num = listViewContacts.getHeaderViewsCount(); //i - listViewContacts.getFirstVisiblePosition() - num
+			for(int i=0; i<tam; i++){
+//				CheckBox chk1 = ((CheckBox)listViewContacts.getChildAt(i));
+				boolean bo = contacts1.get(i).getBlock();
+				listViewContacts.setItemChecked(i, bo);
+				
+			}
+			cdao1.close();
+			
+			listViewContacts.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					
+					 CheckedTextView check = (CheckedTextView) arg1;
+					 check.setChecked(!check.isChecked());
+					 Toast.makeText(Contact.this, (check.isChecked()) ? "Checked true" : "Checked false", Toast.LENGTH_SHORT).show();
+					 
+					 Toast.makeText(Contact.this, ((TextView)arg1).getText(), Toast.LENGTH_SHORT).show();
+					 
+					 if(check.isChecked()){ //Visible=1
+						 ContactDAO cdao = new ContactDAO(Contact.this);
+						 cdao.open();
+						 cdao.enableBlock(((TextView)arg1).getText().toString());
+						 cdao.close();
+						 ContactDAO cdao1 = new ContactDAO(Contact.this);
+						 cdao1.open();
+						 ArrayList<DataContact> aux = (ArrayList<DataContact>) cdao1.getAllContacts();
+						 cdao1.close();
+					 }else{					//Visible=0
+						 ContactDAO cdao = new ContactDAO(Contact.this);
+						 cdao.open();
+						 cdao.disableBlock(((TextView)arg1).getText().toString());
+						 cdao.close();
+						 ContactDAO cdao1 = new ContactDAO(Contact.this);
+						 cdao1.open();
+						 ArrayList<DataContact> aux = (ArrayList<DataContact>) cdao1.getAllContacts();
+						 cdao1.close();
+						 
+					 }
+				}
+			});
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
@@ -347,6 +400,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 					}
 				});
 			}
+			groupsource.close();
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
@@ -383,7 +437,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 			}else{			//if the contact hasn't a phone number, we remove it from the list
 				markedContacts.add(i);
 			}
-			contacts.get(i).setName(contacts.get(i).getName()+ " - " + contacts.get(i).getPhoneNumber());
+			contacts.get(i).setName(contacts.get(i).getName());
 		}
 
 		int i=0;
@@ -412,7 +466,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		contactDAO.open();
 		if(contactDAO.getAllContactsName() != null && contactDAO.getAllContactsName().size()>0)
 			contactsList =contactDAO.getAllContactsName(); 
-
+		contactDAO.close();
 	}
 
 	/**
