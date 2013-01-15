@@ -56,7 +56,8 @@ public class CreateGroupDialog extends DialogFragment {
 	public void insertGroup(String name) {
 		groupDAO = new GroupDAO(this.getActivity().getApplicationContext());
 		groupDAO.open();
-		groupDAO.create(name);	
+		groupDAO.create(name);
+		
 	}
 	
 	public String[] getContactsName() {

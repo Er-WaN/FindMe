@@ -45,6 +45,7 @@
     <string name="menu_newGroup">New group</string>
     <string name="searchBox">Search contact</string>
     <string name="title_activity_create_group">CreateGroup</string>
+    <string name="delete_group_success">The group was deleted</string>
 
     <!-- Create Group -->
     <string name="new_group">New Group</string>

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -16,7 +19,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
@@ -45,51 +50,51 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 	private List<String> contactsList;	//Contains the names of the contacts that will be shown in the listview 
 	private List<String> groupsList;  	//Contains the names of the groups that will be shown in the listview
 	private EditText editTextSearchContact;
-	
-	
-	
+
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		
+
 		/*Se define todo lo que es la interfaz de la activity*/
 		setContentView(R.layout.activity_contact);
-		
+
 		listViewContacts = (ListView) findViewById(R.id.listViewContacts);
 		listViewGroups = (ListView) findViewById(R.id.listViewGroups);
-		
+
 		listViewContacts.setTextFilterEnabled(true);
 		listViewGroups.setTextFilterEnabled(true);
 
 		groupsList = new ArrayList<String>();
-		
+
 		for (int i = 0; i < grupos.size(); i++) {
 			groupsList.add(grupos.get(i).getName());
 		}
-		
+
 		editTextSearchContact = (EditText) findViewById(R.id.searchEditText);
 
-		
+
 		host = (TabHost) findViewById(R.id.tabHost); 
 		host.setup(); 
-		
+
 		TabSpec spec = host.newTabSpec("TABCONTACTS"); 
 		spec.setIndicator("Contactos"); 
 		spec.setContent(R.id.listViewContacts); 
 		host.addTab(spec); 
-		
+
 		spec = host.newTabSpec("TABGROUPS"); 
 		spec.setIndicator("Grupos"); 
-		 
+
 		spec.setContent(R.id.listViewGroups); 
 		host.addTab(spec); 
 		host.setCurrentTabByTag("TABCONTACTS");
-		
+
 		/*Se leen los contactos del telefono y se muestran en pantalla a trav�s de AsyncTask*/
 		new LeerContactosAsyncTask().execute();
 		new GetGroupsAsyncTask().execute();
-		
+
 		listViewContacts.setTextFilterEnabled(true);
 		editTextSearchContact.addTextChangedListener(new TextWatcher() {
 
@@ -98,14 +103,14 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 				// TODO Auto-generated method stub
 				Contact.this.adapter_contact.getFilter().filter(s);
 				Contact.this.adapter_group.getFilter().filter(s);
-				
+
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -113,11 +118,11 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 					int count) {
 				// TODO Auto-generated method stub	
 			}
-			
+
 		}
-		);
+				);
 	}
-	
+
 	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
 	 * de objetos de clase Contacto (es decir, con nombre y numero de telefono). SOLO 1 NUMERO DE TELEFONO POR CADA CONTACTO. No recibe nada como par�metro. 
 
@@ -125,20 +130,20 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 	 * @return ArrayList<Contacto> con los nombres y los telefonos de la agenda del telefono.
 	 * */
 	public ArrayList<DataContact> leerContactos(){
-		
+
 		ArrayList<DataContact> contactos = new ArrayList<DataContact>();		
-		
+
 		contactsource = new ContactDAO(Contact.this);
 		contactsource.open();
 		contactos = (ArrayList<DataContact>) contactsource.getAllContacts();
-		
+
 		contactsList = new ArrayList<String>();
-		
+
 		Uri uri = ContactsContract.Contacts.CONTENT_URI;
 		String[] projection = new String[] { ContactsContract.Contacts._ID,ContactsContract.Contacts.DISPLAY_NAME};
-		
+
 		String selection = ContactsContract.Contacts.HAS_PHONE_NUMBER + " = '1'";
-				
+
 		String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + "= 'ASC'";
 		Cursor cursor = getContentResolver().query(uri, projection, selection, null, sortOrder);
 		while (cursor.moveToNext()) {
@@ -156,25 +161,25 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 		}
 		cursor.close();
-		
+
 		contactos = formatPhoneNumbers(contactos);
-		
+
 		for (int i = 0; i < contactos.size(); i++) 
 			contactsList.add(contactos.get(i).getName());
 
 		groupsource = new GroupDAO(Contact.this);
 		groupsource.open();
 		grupos = groupsource.getAllgroups();
-		
+
 		return contactos;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_contact, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 
@@ -200,43 +205,43 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		case R.id.menu_newGroup:
 			DialogFragment dialog = new CreateGroupDialog();
 			dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
-			
-			
+
+
 			return true;
 		default:
 			Toast.makeText(Contact.this, "Invalid menu item selection.", Toast.LENGTH_LONG).show();
 			return false;
-				
+
 		}
 	}
-//		switch (host.getCurrentTab()) {
-//		/*case android.R.id.home:
-//			// This ID represents the Home or Up button. In the case of this
-//			// activity, the Up button is shown. Use NavUtils to allow users
-//			// to navigate up one level in the application structure. For
-//			// more details, see the Navigation pattern on Android Design:
-//			//
-//			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-//			//
-//			NavUtils.navigateUpFromSameTask(this);
-//			return true;*/
-//		case 0:
-//			Toast.makeText(this, "pulsado item update", Toast.LENGTH_SHORT).show();
-//			return true;
-//		case 1:
-//			DialogFragment dialog = new CreateGroupDialog();
-//	        dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
-//			return true;
-//			default:
-//				Toast.makeText(Contact.this, "Algo ha ido mal al clickar en el menu", Toast.LENGTH_LONG).show();
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
+	//		switch (host.getCurrentTab()) {
+	//		/*case android.R.id.home:
+	//			// This ID represents the Home or Up button. In the case of this
+	//			// activity, the Up button is shown. Use NavUtils to allow users
+	//			// to navigate up one level in the application structure. For
+	//			// more details, see the Navigation pattern on Android Design:
+	//			//
+	//			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+	//			//
+	//			NavUtils.navigateUpFromSameTask(this);
+	//			return true;*/
+	//		case 0:
+	//			Toast.makeText(this, "pulsado item update", Toast.LENGTH_SHORT).show();
+	//			return true;
+	//		case 1:
+	//			DialogFragment dialog = new CreateGroupDialog();
+	//	        dialog.show(getSupportFragmentManager(), "CreateGroupDialog");
+	//			return true;
+	//			default:
+	//				Toast.makeText(Contact.this, "Algo ha ido mal al clickar en el menu", Toast.LENGTH_LONG).show();
+	//		}
+	//		return super.onOptionsItemSelected(item);
+	//	}
 
 
 	private class LeerContactosAsyncTask extends AsyncTask<Void, Integer, Void>{
 
-		
+
 		@Override
 		protected void onPreExecute() {			
 			Contact.this.setProgressBarIndeterminateVisibility(true);
@@ -245,7 +250,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-//			leerContactos();
+			//			leerContactos();
 			leerContactosBDLocal();
 			return null;
 		}
@@ -259,12 +264,12 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
-		
+
 	}
-	
+
 	private class GetGroupsAsyncTask extends AsyncTask<Void, Integer, Void>{
 
-		
+
 		@Override
 		protected void onPreExecute() {			
 			Contact.this.setProgressBarIndeterminateVisibility(true);
@@ -287,13 +292,65 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 			if(groupsList!=null && groupsList.size() > 0 ){
 				adapter_group = new ArrayAdapter<String>(Contact.this,android.R.layout.simple_list_item_1,groupsList);	
 				listViewGroups.setAdapter(adapter_group);
+				listViewGroups.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+					@Override
+					public boolean onItemLongClick(AdapterView<?> arg0,
+							View arg1, final int arg2, long arg3) {
+						final int group_id = arg2 + 1;
+						Log.v("LOG", "test1");
+						if (true) {
+							Log.v("LOG", "test2");
+							CharSequence[] items = {"Delete group", "Put visible"};
+							Log.v("LOG", "test3");
+							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
+							builder.setTitle(String.valueOf(arg2));
+							Log.v("LOG", "test4");
+							builder.setItems(items, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									Log.v("LOG", "test5");
+									switch (which) {
+									case 0:
+										Log.v("LOG", "test5");
+										deleteGroup(arg2);
+										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
+										break;
+									case 1:
+										Log.v("LOG", "test6");
+										break;
+									}
+								};});
+							builder.show();
+						} else {
+							CharSequence[] items = {"Delete group", "Put invisible"};
+							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
+							builder.setTitle("Groups");
+							builder.setItems(items, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+									switch (which) {
+									case 0:
+										deleteGroup(group_id);
+										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
+										break;
+									case 1:
+
+										break;
+									}
+								};});
+							builder.show();
+						}
+						
+						
+						return false;
+					}
+				});
 			}
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
-		
+
 	}
-	
+
 
 	/**This method format the phone number of each contact, obtaining a format like 6XXXXXXXX.
 	 * The first digit of the number will be 6 and the phone will have 9 digits*
@@ -318,7 +375,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 					else if(auxLength>9)
 						contacts.get(i).setPhoneNumber(auxNum.substring(auxLength-9, auxLength));
 				}
-				
+
 				if(contacts.get(i).getPhoneNumber().startsWith("6")==false ) //If is a fix number, I mark to remove then
 					markedContacts.add(i);
 			}else{			//if the contact hasn't a phone number, we remove it from the list
@@ -335,24 +392,67 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		}		
 		return contacts;
 	}
-	
 
-	
-	
+
+
+
 	public void onUpdateGroup() {
 		Toast.makeText(this, "update", Toast.LENGTH_SHORT).show();
 		adapter_group.clear();
 		new GetGroupsAsyncTask().execute();
 		adapter_group.notifyDataSetChanged();
-		
+
 	}
-	
+
 	private void leerContactosBDLocal() {
-		
+
 		ContactDAO contactDAO = new ContactDAO(Contact.this);
 		contactDAO.open();
 		if(contactDAO.getAllContactsName() != null && contactDAO.getAllContactsName().size()>0)
 			contactsList =contactDAO.getAllContactsName(); 
-		
+
+	}
+
+	/**
+	 * Method to know if a group is block.
+	 * @param group_name String, the name of the group
+	 * @return isBlock Boolean, if true the group is block. 
+	 * **/
+	public boolean getIfGroupBlock(String group_name) {
+		boolean isBlock;
+		groupsource = new GroupDAO(Contact.this);
+		groupsource.open();
+		isBlock = groupsource.getIfBlock(group_name);
+		groupsource.close();
+		return isBlock;
+	}
+
+	/**
+	 * Method to know if a group is block.
+	 * @param group_id int, the id of the group
+	 * @return isBlock Boolean, if true the group is block. 
+	 * **/
+	public boolean getIfGroupBlock(int group_id) {
+		boolean isBlock;
+		groupsource = new GroupDAO(Contact.this);
+		groupsource.open();
+		isBlock = groupsource.getIfBlock(group_id);
+		groupsource.close();
+		return isBlock;
+	}
+
+	/**
+	 * Method delete a group.
+	 * @param group_id int, the id of the group
+	 * **/
+	public void deleteGroup(int group_id) {
+		Log.v("LOG", "test6");
+		groupsource = new GroupDAO(Contact.this);
+		Log.v("LOG", "test7");
+		groupsource.open();
+		Log.v("LOG", "test8");
+		groupsource.deleteGroup(group_id);
+		Log.v("LOG", "test9");
+		groupsource.close();
 	}
 }
