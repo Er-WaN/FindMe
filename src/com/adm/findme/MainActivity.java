@@ -286,18 +286,18 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		//set up dialog
 		if (!marker.getTitle().equals("My Position")) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(marker.getTitle())
+			builder.setTitle(splitTitle(marker.getTitle())[0])
 				   .setItems(items, new DialogInterface.OnClickListener() {
 			               public void onClick(DialogInterface dialog, int which) {
 			            	   switch (which) {
 				           			case 0:
 					           			Intent call = new Intent(Intent.ACTION_VIEW);
-					           			call.setData(Uri.parse("tel:"+marker.getSnippet()));
+					           			call.setData(Uri.parse("tel:"+splitTitle(marker.getTitle())[1]));
 					           			startActivity(call);
 				           			break;
 				           			case 1:
 					           			Intent send_sms = new Intent(Intent.ACTION_VIEW);
-					           			send_sms.setData(Uri.parse("sms:"+marker.getSnippet()));
+					           			send_sms.setData(Uri.parse("sms:"+splitTitle(marker.getTitle())[1]));
 					           			startActivity(send_sms);
 				           			break;
 				           		}
@@ -329,11 +329,11 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		{
 			float f = Float.parseFloat(contactlist[i][2]);
 			double d = Double.parseDouble(contactlist[i][3]);
-			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0] + " \n" +  contactlist[i][1]).snippet(contactlist[i][4] + ":\n" + contactlist[i][5]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0] + " - " +  contactlist[i][1]).snippet(contactlist[i][4] + ":\n" + contactlist[i][5]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 			this.marker = mMap.addMarker(mo);
 		};
 		
-		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Position").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+		MarkerOptions mo = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Position").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).draggable(true);
 		this.marker = mMap.addMarker(mo);
         if (i == 0) {
 	        CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -579,7 +579,6 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			SharedPreferences preferences = getSharedPreferences(PREFS_NAME, 0);
 			
 			Editor editor = preferences.edit();
-			Log.v("tag", list.get(0).toString());
 			editor.putInt("myUserID", Integer.parseInt(list.get(0).toString()));
 			editor.commit();
 			
@@ -697,4 +696,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		return contactos;
 	}
 
+	public String[] splitTitle(String title) {
+		String[] titleSplit;
+		titleSplit = title.split(" - ");
+		return titleSplit;
+	}
 }
