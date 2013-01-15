@@ -175,7 +175,7 @@ public class GroupDAO extends DAOBase {
 	
 	/**
      * Method to get the id of the last group created in the database.
-     * @return id The id of the last group create in the database.
+     * @return int The id of the last group create in the database.
      * **/
 	public int getLastGroupId() {
 		Cursor cursor;
@@ -198,7 +198,7 @@ public class GroupDAO extends DAOBase {
 	
 	/**
      * Method to delete a group.
-     * @params group_id int, the id of the group.
+     * @param int the id of the group.
      * 
      * **/
 	public void deleteGroup(int group_id) {
@@ -207,7 +207,7 @@ public class GroupDAO extends DAOBase {
 	
 	/**
      * Method to delete a group.
-     * @params group_name String, the bame of the group.
+     * @param String the name of the group.
      * 
      * **/
 	public void deleteGroup(String name) {
