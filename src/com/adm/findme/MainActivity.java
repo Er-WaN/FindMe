@@ -96,6 +96,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		    liste.add(element);
 		};
 		
+		if (checkFirstTime() == true){
+			firstTimeDialog();
+		}
 			new actualizarBDLocal().execute();
 			new printPlaces().execute();
 
@@ -534,6 +537,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			int[] phone_array = {phone};
 			new putContactInDB().execute(phone_array);
 			firstTimeEnable(phone);
+			new printPlaces().execute();
 		  }
 		});
 
@@ -662,16 +666,13 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	private class actualizarBDLocal extends AsyncTask<Void, Integer, Void>{
 
-		//ProgressDialog progressDialog;
+		ProgressDialog progressDialog;
 		
 		protected void onPreExecute() {			
 		
-			//progressDialog = ProgressDialog.show(MainActivity.this,  null, getResources().getString(R.string.sync_db));
+		MainActivity.this.setProgressBarIndeterminateVisibility(true);
 			
-			if (checkFirstTime() == true){
-				firstTimeDialog();
-			}
-			MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			
 			new printPlaces().execute();
 			super.onPreExecute();
 		}
@@ -686,10 +687,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		}
 			
 		protected void onPostExecute(Void result) {
-
-			//progressDialog.cancel();
 			MainActivity.this.setProgressBarIndeterminateVisibility(false);
-			
 			super.onPostExecute(result);
 		}
 
