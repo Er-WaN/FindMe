@@ -366,6 +366,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 					// DO SOMETHING
 					ContactDAO contactDAO = new ContactDAO(MainActivity.this.getApplicationContext());
 					contactDAO.open();
+					//contactos = (ArrayList<DataContact>) contactDAO.getAllVisibleContacts();
 					contactos = (ArrayList<DataContact>) contactDAO.getAllContacts();
 					int i=0,cn=0;
 					int lc=contactos.size();
@@ -634,7 +635,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 				if(contactDAO.existsContactByTelf(phone) == false){ //sino existe
 					int block = (contactosAgenda.get(i).getBlock()) ? 1 : 0; 
 					String name = contactosAgenda.get(i).getName();
-					contactDAO.create(name, phone, 0, block);
+					contactDAO.create(name, phone, 0, 0);
 				}
 				
 			}

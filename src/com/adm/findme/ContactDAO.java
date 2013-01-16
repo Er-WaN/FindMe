@@ -81,6 +81,26 @@ public class ContactDAO extends DAOBase{
 		return contactList;
 	}
 	
+	public List<DataContact> getAllVisibleContacts() {
+		List<DataContact> contactList = new ArrayList<DataContact>();
+		
+		Cursor cursor = mDb.rawQuery("SELECT * FROM Contacts WHERE Contact_block = 0", null);
+		
+		if (cursor.moveToFirst()) {
+			do {
+				DataContact contact = new DataContact();
+				contact.setId(cursor.getInt(0));
+				contact.setName(cursor.getString(1));
+				contact.setPhoneNumber(cursor.getString(2));
+				contact.setFavorite(cursor.getInt(3) == 0 ? true : false);
+				contact.setBlock(cursor.getInt(4) == 0 ? true : false);
+				contactList.add(contact);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return contactList;
+	}
+	
 	public ArrayList<String> getAllContactsName() {
 		ArrayList<String> contactList = new ArrayList<String>();
 		
@@ -172,14 +192,9 @@ public class ContactDAO extends DAOBase{
 	public String getContactNameByPhone(String phone) {
 		String name;
 		Cursor cursor;
-		Log.v("log", "test1");
-		Log.v("log", "phone: "+phone);
 		cursor = mDb.rawQuery("SELECT Contact_name FROM Contacts WHERE Contact_phonenumber = ?", new String[] {phone});
-		Log.v("log", "test2");
 		cursor.moveToFirst();
-		Log.v("log", "test3");
 		name = cursor.getString(0);
-		Log.v("log", "test4");
 		cursor.close();
 		return name;
 	}
