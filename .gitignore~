@@ -35,5 +35,8 @@ local.properties
 
 .classpath
 
+<<<<<<< HEAD
+.project
+=======
 project.properties
-
+>>>>>>> 4d714c0c0e8ef32260c8d414324a2b7f341f0e1f
