@@ -6,33 +6,34 @@
 
 	<LinearLayout
 	    xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="73dp"
+	    android:layout_width="75dp"
 	    android:layout_height="fill_parent"
 	    android:background="@drawable/background"
 	    android:orientation="vertical"
-	    android:padding="1dp" >
+	    android:padding="2dp" >
 
 	  <ImageButton
-	    android:id="@+id/contact"
-	    style="@style/ButtonHomeNormalLandMDPI"
-	    android:onClick="onClickContact"
-	    android:src="@drawable/ic_menu_contacts"
-	     />
+	      android:id="@+id/contact"
+	      style="@style/ButtonHomeSmallLandLDPI"
+	      android:layout_width="wrap_content"
+	      android:onClick="onClickContact"
+	      android:src="@drawable/ic_menu_contacts" />
+
 	  <ImageButton
 	    android:id="@+id/group"
-	    style="@style/ButtonHomeNormalLandMDPI"
+	    style="@style/ButtonHomeSmallLandLDPI"
 	    android:onClick="onClickView"
 	    android:src="@drawable/ic_menu_view"
 	     />
 	  <ImageButton
 	    android:id="@+id/share"
-	    style="@style/ButtonHomeNormalLandMDPI"
+	    style="@style/ButtonHomeSmallLandLDPI"
 	    android:onClick="onClickShare"
 	    android:src="@drawable/ic_menu_share"
 	     />
 	  <ImageButton
 	    android:id="@+id/settings"
-	    style="@style/ButtonHomeNormalLandMDPI"
+	    style="@style/ButtonHomeSmallLandLDPI"
 	    android:onClick="onClickSettings"
 	    android:src="@drawable/ic_menu_settings"
 	     />

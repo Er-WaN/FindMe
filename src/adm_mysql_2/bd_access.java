@@ -144,8 +144,6 @@ public class bd_access {
 	*/
 	public ArrayList getContactByTelef(int telef){
 		ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		
-		//http post
 		try{
 		     HttpClient httpclient = new DefaultHttpClient();
 		     String serv=this.servidor+"get_contact_by_telef.php";
@@ -155,6 +153,8 @@ public class bd_access {
 		     //asigno los pares de valores a la llamado HTTPPOST
 		     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		     //LLAMADA HTTPPOST
+		     
+		     
 		     HttpResponse response = httpclient.execute(httppost);
 		     //RECIBO RESPUESTA
 		     HttpEntity entity = response.getEntity();
@@ -691,7 +691,9 @@ public class bd_access {
 	* @param telef
 	*/
 	public int deleteLastPlaceByTelef(int telef){
+		Log.v("log", "test6-1");
 		ArrayList al = this.getContactByTelef(telef);
+		Log.v("log", "test6-2");
 		if(al.size()==0){
 			
 			//el usuario que intentas insertar no existe

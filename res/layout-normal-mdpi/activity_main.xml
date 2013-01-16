@@ -20,12 +20,14 @@
 	  android:layout_below="@+id/map"
 	  android:background="@drawable/background"
 	  android:padding="3dp" >
+
 	  <ImageButton
-	    android:id="@+id/contact"
-	    style="@style/ButtonHome"
-	    android:onClick="onClickContact"
-	    android:src="@drawable/ic_menu_contacts"
-	     />
+	      android:id="@+id/contact"
+	      style="@style/ButtonHome"
+	      android:layout_marginLeft="-3dp"
+	      android:onClick="onClickContact"
+	      android:src="@drawable/ic_menu_contacts" />
+
 	  <ImageButton
 	    android:id="@+id/group"
 	    style="@style/ButtonHome"
