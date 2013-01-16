@@ -218,6 +218,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		editor.putFloat("last_longitude", (float)longitude );
 		editor.commit();
 		
+		//new actualizarBDLocal().execute();
+		new printPlaces().execute();
+		
 		updateMap();
 	}
 
@@ -330,7 +333,19 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		{
 			float f = Float.parseFloat(contactlist[i][2]);
 			double d = Double.parseDouble(contactlist[i][3]);
-			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0] + " - " +  contactlist[i][1]).snippet(contactlist[i][4] + ":\n" + contactlist[i][5]).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+			String snippet = "";
+			if (contactlist[i][4].length() > 0  && contactlist[i][5].length() > 0 )
+			{
+				snippet = contactlist[i][4] + ":\n" + contactlist[i][5];
+			} 
+			else if (contactlist[i][4].length() > 0  && contactlist[i][5].length() == 0 )
+			{
+				snippet = contactlist[i][4];
+			}
+			else if (contactlist[i][4].length() == 0  && contactlist[i][5].length() > 0 ) {
+				snippet = contactlist[i][5];
+			}
+			MarkerOptions mo = new MarkerOptions().position(new LatLng(f, d)).title(contactlist[i][0] + " - " +  contactlist[i][1]).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 			this.marker = mMap.addMarker(mo);
 		};
 		
@@ -355,7 +370,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			// TODO Auto-generated method stub
 			mloc = new claseLocation();
 			mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
+			MainActivity.this.setProgressBarIndeterminateVisibility(true);
 			mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,mloc);
 		}
 		@Override
@@ -422,7 +437,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 				}
 				cont++;
 			}
-			
+			MainActivity.this.setProgressBarIndeterminateVisibility(false);
 			updateMap();
 		}
 		
@@ -645,16 +660,16 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	private class actualizarBDLocal extends AsyncTask<Void, Integer, Void>{
 
-		ProgressDialog progressDialog;
+		//ProgressDialog progressDialog;
 		
 		protected void onPreExecute() {			
 		
-			progressDialog = ProgressDialog.show(MainActivity.this,  null, getResources().getString(R.string.sync_db));
+			//progressDialog = ProgressDialog.show(MainActivity.this,  null, getResources().getString(R.string.sync_db));
 			
 			if (checkFirstTime() == true){
 				firstTimeDialog();
 			}
-			//MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			MainActivity.this.setProgressBarIndeterminateVisibility(true);
 			new printPlaces().execute();
 			super.onPreExecute();
 		}
@@ -670,8 +685,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			
 		protected void onPostExecute(Void result) {
 
-			progressDialog.cancel();
-			//MainActivity.this.setProgressBarIndeterminateVisibility(false);
+			//progressDialog.cancel();
+			MainActivity.this.setProgressBarIndeterminateVisibility(false);
 			
 			super.onPostExecute(result);
 		}
