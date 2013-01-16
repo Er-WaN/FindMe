@@ -93,11 +93,9 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		    liste.add(element);
 		};
 		
-		if (this.checkFirstTime() == true)
-			firstTimeDialog();
-		
-		new actualizarBDLocal().execute();
+			new actualizarBDLocal().execute();
 		//new printPlaces().execute();
+
 	}
 	
 	@Override
@@ -643,6 +641,10 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	private class actualizarBDLocal extends AsyncTask<Void, Integer, Void>{
 
 		protected void onPreExecute() {			
+		
+			if (checkFirstTime() == true){
+				firstTimeDialog();
+			}
 			MainActivity.this.setProgressBarIndeterminateVisibility(true);
 			new printPlaces().execute();
 			super.onPreExecute();
