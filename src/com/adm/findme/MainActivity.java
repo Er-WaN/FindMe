@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import adm_mysql_2.bd_access;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,6 +68,8 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	double longitude;
 	private double altitude;
 	private float accuracy;
+	
+	ProgressDialog progressDialog;
 		
 	int i = 0;
 	
@@ -94,7 +97,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		};
 		
 			new actualizarBDLocal().execute();
-		//new printPlaces().execute();
+			new printPlaces().execute();
 
 	}
 	
@@ -407,7 +410,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 				if(places.get(cont).size()!=0){
 					//mo = new MarkerOptions().position(new LatLng((Double) places.get(cont).get(5),(Double) places.get(cont).get(6))).title((String)places.get(cont).get(2)).snippet((String)places.get(cont).get(8)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 					//marker = mMap.addMarker(mo);
-					contactlist[cn][0] = places.get(cont).get(8).toString();
+					contactlist[cn][0] = getContactName(places.get(cont).get(7).toString());
 					contactlist[cn][1] = places.get(cont).get(7).toString();
 					contactlist[cn][2] = places.get(cont).get(5).toString();
 					contactlist[cn][3] = places.get(cont).get(6).toString();
@@ -526,6 +529,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	private class putContactInDB extends AsyncTask<int[], Integer, Void>{
 	
+			
 			@Override
 			protected void onPreExecute() {			
 				MainActivity.this.setProgressBarIndeterminateVisibility(true);
@@ -640,24 +644,33 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 	
 	private class actualizarBDLocal extends AsyncTask<Void, Integer, Void>{
 
+		ProgressDialog progressDialog;
+		
 		protected void onPreExecute() {			
 		
+			progressDialog = ProgressDialog.show(MainActivity.this,  null, getResources().getString(R.string.sync_db));
+			
 			if (checkFirstTime() == true){
 				firstTimeDialog();
 			}
-			MainActivity.this.setProgressBarIndeterminateVisibility(true);
+			//MainActivity.this.setProgressBarIndeterminateVisibility(true);
 			new printPlaces().execute();
 			super.onPreExecute();
 		}
 
 		protected Void doInBackground(Void... params) {
-			insertarContactosEnBDLocal(leerContactosAgenda());
+			if (checkFirstTime() == true)
+			{
+				Log.v("tag", "first");
+				insertarContactosEnBDLocal(leerContactosAgenda());
+			}
 			return null;
 		}
 			
 		protected void onPostExecute(Void result) {
 
-			MainActivity.this.setProgressBarIndeterminateVisibility(false);
+			progressDialog.cancel();
+			//MainActivity.this.setProgressBarIndeterminateVisibility(false);
 			
 			super.onPostExecute(result);
 		}
@@ -702,5 +715,14 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		String[] titleSplit;
 		titleSplit = title.split(" - ");
 		return titleSplit;
+	}
+	
+	public String getContactName(String phone) {
+		String name;
+		ContactDAO contactDAO = new ContactDAO(MainActivity.this);
+		contactDAO.open();
+		name = contactDAO.getContactNameByPhone(phone);
+		contactDAO.close();
+		return name;
 	}
 }

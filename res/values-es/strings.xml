@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- MainActivity -->
+    <string name="app_name">FindMe</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="title_activity_contact">Contactos</string>
+    <string name="title_activity_group">Grupos</string>
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="provider_enabled">The provider %s is now enabled</string>
+    <string name="provider_disabled">The provider %s is now disabled</string>
+    <string name="provider_new_status">The provider %1$s has now a new status %2$s</string>
+    <string name="new_location">New Location : Latitude = %1$s, Longitude = %2$s, Altitude = %3$s avec une précision de %4$s mètres </string>
+    <string name="sync_db">Sincronización...</string>
+
+    <string-array name="map_type">
+        <item>Normal</item>
+        <item>Hybrid</item>
+        <item>Terrain</item>
+        <item>Satellite</item>
+    </string-array>
+
+    <!-- Share -->
+    <string name="sharePlace">Nombre del lugar</string>
+    <string name="shareDescription">Descripción del lugar</string>
+    <string name="share">Compartir</string>
+    <string name="shareTitle">Compartir posición</string>
+
+    <!-- View Group -->
+    <string name="viewTitle">Seleccionar grupos</string>
+    <string name="show">Mostrar</string>
+    <string name="cancel">Cancelar</string>
+
+    <string name="title_activity_on_click_info_window">OnClickInfoWindow</string>
+
+    <!-- Settings -->
+    <string name="km">KM</string>
+    <string name="delete_historic">Borrar histórico</string>
+    <string name="delete_last_share">Borrar mi última posición</string>
+
+    <!-- Contacts -->
+    <string name="tab_groups">Grupos</string>
+    <string name="tab_contacts">Contactos</string>
+    <string name="menu_update">Actualizar</string>
+    <string name="menu_newGroup">Nuevo gropo</string>
+    <string name="searchBox">Buscar</string>
+    <string name="title_activity_create_group">CreateGroup</string>
+    <string name="delete_group_success">El grupo fue creado</string>
+    <string name="set_visible_group">Grupo visible</string>
+    <string name="set_invisible_group">Grupo invisible</string>
+    <string name="delete_group">Borrar grupo</string>
+    <string name="set_invisible">Establecer invisible</string>
+    <string name="set_visible">Establecer visible</string>
+    
+
+    <!-- Create Group -->
+    <string name="new_group">Nuevo grupo</string>
+    <string name="new_group_message1">Introducir el nombre del nuevo grupo.</string>
+    <string name="new_group_message2">Elegir los contactos a agregar en el nuevo grupo.</string>
+    <string name="new_group_next">Siguiente</string>
+    <string name="new_group_create">Crear</string>
+    <string name="new_group_cancel">Cancelar</string>
+    <string name="new_group_hint">Nombre del grupo</string>
+    <string name="new_group_valide">Introduce un nombre válido</string>
+    <string name="group_already_exists">Este grupo ya existe</string>
+    <string name="group_created">Grupo creado</string>
+    
+    <!-- First Time Dialog -->
+	<string name="first_time_dialog_title">Primera utilización</string>
+	<string name="first_time_dialog_message">Gracias por descargar nuestra aplicación. \n\nTiene que poner su número de teléfono.</string>
+	<string name="first_time_dialog_hint">Su número aquí</string>
+	
+	
+</resources>

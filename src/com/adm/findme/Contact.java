@@ -84,12 +84,12 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		host.setup(); 
 
 		TabSpec spec = host.newTabSpec("TABCONTACTS"); 
-		spec.setIndicator("Contactos"); 
+		spec.setIndicator(this.getString(R.string.tab_groups)); 
 		spec.setContent(R.id.listViewContacts); 
 		host.addTab(spec); 
 
 		spec = host.newTabSpec("TABGROUPS"); 
-		spec.setIndicator("Grupos"); 
+		spec.setIndicator(this.getString(R.string.tab_contacts)); 
 
 		spec.setContent(R.id.listViewGroups); 
 		host.addTab(spec); 
@@ -100,7 +100,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 		new GetGroupsAsyncTask().execute();
 
 		listViewContacts.setTextFilterEnabled(true);
-		editTextSearchContact.addTextChangedListener(new TextWatcher() {
+		/*editTextSearchContact.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void afterTextChanged(Editable s) {
@@ -124,7 +124,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 			}
 
 		}
-				);
+				);*/
 	}
 
 	/**Lee los nombres de los contactos de la agenda telef�nica (SOLO DE AQUELLOS QUE TIENEN NUMERO DE TEL�FONO) y devuelve un ArrayList 
@@ -287,9 +287,9 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 					
 					 CheckedTextView check = (CheckedTextView) arg1;
 					 check.setChecked(!check.isChecked());
-					 Toast.makeText(Contact.this, (check.isChecked()) ? "Checked true" : "Checked false", Toast.LENGTH_SHORT).show();
+					 //Toast.makeText(Contact.this, (check.isChecked()) ? "Checked true" : "Checked false", Toast.LENGTH_SHORT).show();
 					 
-					 Toast.makeText(Contact.this, ((TextView)arg1).getText(), Toast.LENGTH_SHORT).show();
+					 //Toast.makeText(Contact.this, ((TextView)arg1).getText(), Toast.LENGTH_SHORT).show();
 					 
 					 if(check.isChecked()){ //Visible=1
 						 ContactDAO cdao = new ContactDAO(Contact.this);
@@ -313,6 +313,31 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 					 }
 				}
 			});
+			listViewContacts.setTextFilterEnabled(true);
+			editTextSearchContact.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					// TODO Auto-generated method stub
+					adapter_contact.getFilter().filter(s);
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
+					// TODO Auto-generated method stub	
+				}
+
+			}
+					);
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
 		}
@@ -355,7 +380,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 						final boolean isBlock = getIfGroupBlock(name_group);
 						
 						if (isBlock) {
-							CharSequence[] items = {"Delete group", "Set visible"};
+							CharSequence[] items = {getResources().getString(R.string.delete_group), getResources().getString(R.string.set_visible)};
 							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
 							builder.setTitle("Group: "+name_group);
 							builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -374,7 +399,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 								};});
 							builder.show();
 						} else {
-							CharSequence[] items = {"Delete group", "Set invisible"};
+							CharSequence[] items = {getResources().getString(R.string.delete_group), getResources().getString(R.string.set_invisible)};
 							AlertDialog.Builder builder = new AlertDialog.Builder(Contact.this);
 							builder.setTitle("Group: "+name_group);
 							builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -386,7 +411,7 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 										Toast.makeText(Contact.this, R.string.delete_group_success, Toast.LENGTH_SHORT).show();
 										break;
 									case 1:
-										Log.v("log", "block: false");
+										//Log.v("log", "block: false");
 										enableBlock(name_group);
 										Toast.makeText(Contact.this, R.string.set_invisible_group, Toast.LENGTH_SHORT).show();
 										break;
@@ -399,10 +424,36 @@ public class Contact extends android.support.v4.app.FragmentActivity {
 						return false;
 					}
 				});
+				listViewContacts.setTextFilterEnabled(true);
+				editTextSearchContact.addTextChangedListener(new TextWatcher() {
+
+					@Override
+					public void afterTextChanged(Editable s) {
+						// TODO Auto-generated method stub
+						Contact.this.adapter_group.getFilter().filter(s);
+
+					}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start, int count,
+							int after) {
+						// TODO Auto-generated method stub
+
+					}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before,
+							int count) {
+						// TODO Auto-generated method stub	
+					}
+
+				}
+						);
 			}
 			groupsource.close();
 			Contact.this.setProgressBarIndeterminateVisibility(false);
 			super.onPostExecute(result);
+			
 		}
 
 	}

@@ -168,5 +168,20 @@ public class ContactDAO extends DAOBase{
 		mDb.update(TABLE_NAME, value, NAME + " = ? ", new String[] {contact_name});
 //		mDb.execSQL("UPDATE " + TABLE_NAME + " SET " + BLOCK + "=0 WHERE " + NAME + "= '" + contact_name + "' ;" );
 	}
+	
+	public String getContactNameByPhone(String phone) {
+		String name;
+		Cursor cursor;
+		Log.v("log", "test1");
+		Log.v("log", "phone: "+phone);
+		cursor = mDb.rawQuery("SELECT Contact_name FROM Contacts WHERE Contact_phonenumber = ?", new String[] {phone});
+		Log.v("log", "test2");
+		cursor.moveToFirst();
+		Log.v("log", "test3");
+		name = cursor.getString(0);
+		Log.v("log", "test4");
+		cursor.close();
+		return name;
+	}
 
 }
