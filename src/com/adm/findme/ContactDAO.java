@@ -73,7 +73,7 @@ public class ContactDAO extends DAOBase{
 				contact.setName(cursor.getString(1));
 				contact.setPhoneNumber(cursor.getString(2));
 				contact.setFavorite(cursor.getInt(3) == 0 ? true : false);
-				contact.setBlock(cursor.getInt(4) == 0 ? true : false);
+				contact.setBlock(cursor.getInt(4) == 0 ? false : true);
 				contactList.add(contact);
 			} while (cursor.moveToNext());
 		}

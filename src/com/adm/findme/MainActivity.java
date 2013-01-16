@@ -218,7 +218,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 		editor.putFloat("last_longitude", (float)longitude );
 		editor.commit();
 		
-		//new actualizarBDLocal().execute();
+		new actualizarBDLocal().execute();
 		new printPlaces().execute();
 		
 		updateMap();
@@ -386,10 +386,12 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 					int i=0,cn=0;
 					int lc=contactos.size();
 					while(i<lc){
+						Log.v("contact "+i+" : "+contactos.get(i).getName(), "block: "+contactos.get(i).getBlock());
 						int user = (Integer) BD.getContactByTelef(Integer.parseInt(contactos.get(i).getPhoneNumber())).get(0);
 						ArrayList UserPlaces = BD.getLastPlaceByUser(user);
 						if(!contactos.get(i).getBlock())
 						{
+							
 							if(UserPlaces.size()!=0){
 								places.add(UserPlaces);
 								ArrayList pla = places.get(cn);
